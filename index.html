@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Playlist Maker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:  #0d0d14; --bg2: #13131d; --bg3: #1a1a27; --bg3h: #20203a;
+      --bd:  #2a2a3d; --bd2: #363655;
+      --p:   #7c3aed; --pl:  #a78bfa; --pk:  #ec4899;
+      --grad: linear-gradient(135deg,#7c3aed,#ec4899);
+      --t1:  #f0eff8; --t2:  #9898b8; --t3:  #5a5a7a;
+      --mood-bg: rgba(109,40,217,.15); --mood-fg: #c4b5fd; --mood-br: rgba(167,139,250,.35);
+      --sit-bg:  rgba(7,89,133,.15);   --sit-fg:  #7dd3fc; --sit-br:  rgba(125,211,252,.35);
+      --gen-bg:  rgba(120,53,15,.15);  --gen-fg:  #fcd34d; --gen-br:  rgba(252,211,77,.35);
+      --art-bg:  rgba(16,185,129,.12); --art-fg:  #6ee7b7; --art-br:  rgba(110,231,183,.3);
+    }
+
+    body { font-family:'Noto Sans KR',-apple-system,sans-serif; background:var(--bg); color:var(--t1); min-height:100vh; line-height:1.6; }
+
+    /* ── HEADER ── */
+    .header {
+      position:sticky; top:0; z-index:100;
+      background:rgba(13,13,20,.9); backdrop-filter:blur(12px);
+      border-bottom:1px solid var(--bd);
+      padding:12px 20px; display:flex; align-items:center; justify-content:space-between; gap:12px;
+    }
+    .header-left  { display:flex; align-items:center; gap:10px; min-width:80px; }
+    .header-right { display:flex; align-items:center; gap:10px; }
+    .logo { font-size:16px; font-weight:700; letter-spacing:-.3px; background:var(--grad); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; white-space:nowrap; }
+    .back-btn {
+      display:none; align-items:center; gap:5px;
+      font-size:13px; color:var(--t2); background:var(--bg3); border:1px solid var(--bd);
+      border-radius:8px; padding:5px 12px; cursor:pointer; font-family:inherit; transition:all .15s;
+    }
+    .back-btn:hover { color:var(--t1); border-color:var(--bd2); }
+    .back-btn.visible { display:flex; }
+    .step-dots { display:flex; gap:5px; align-items:center; }
+    .dot { width:7px; height:7px; border-radius:50%; background:var(--bd2); transition:all .3s; }
+    .dot.active { background:var(--pl); width:22px; border-radius:4px; }
+    .dot.done   { background:var(--p); }
+
+    /* ── CONTAINER ── */
+    .container { max-width:720px; margin:0 auto; padding:0 20px; }
+    .step-section { display:none; animation:fadeUp .35s ease forwards; }
+    .step-section.active { display:block; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:none} }
+
+    /* ── LOADING ── */
+    .loading-overlay {
+      display:none; position:fixed; inset:0; background:rgba(13,13,20,.94); z-index:200;
+      flex-direction:column; align-items:center; justify-content:center; gap:16px;
+    }
+    .loading-overlay.active { display:flex; }
+    .spinner { width:42px; height:42px; border:3px solid var(--bd); border-top-color:var(--pl); border-radius:50%; animation:spin .75s linear infinite; }
+    @keyframes spin { to{transform:rotate(360deg)} }
+    .loading-msg { color:var(--t2); font-size:14px; }
+    .loading-bar-wrap { width:180px; height:3px; background:var(--bd); border-radius:2px; overflow:hidden; }
+    .loading-bar { height:100%; background:var(--grad); border-radius:2px; width:0; }
+
+    /* ── STEP 0: LANDING ── */
+    .hero { text-align:center; padding:48px 0 28px; }
+    .hero-badge {
+      display:inline-block; font-size:11px; color:var(--pl);
+      background:rgba(124,58,237,.1); border:1px solid rgba(167,139,250,.2);
+      border-radius:20px; padding:4px 14px; margin-bottom:20px; letter-spacing:.3px;
+    }
+    .hero h1 { font-size:36px; font-weight:700; line-height:1.25; letter-spacing:-1px; margin-bottom:12px; }
+    .hero h1 .grad { background:var(--grad); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .hero p { font-size:15px; color:var(--t2); max-width:450px; margin:0 auto 28px; line-height:1.75; }
+
+    /* Platform section */
+    .platforms-section {
+      background:var(--bg2); border:1px solid var(--bd); border-radius:16px;
+      padding:18px 20px; max-width:540px; margin:0 auto 22px;
+    }
+    .platforms-label { font-size:11px; color:var(--t3); text-transform:uppercase; letter-spacing:.6px; margin-bottom:12px; }
+    .platforms-grid { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px; }
+    .pbadge {
+      display:flex; align-items:center; gap:6px;
+      border-radius:10px; padding:7px 12px; font-size:12px; font-weight:600; border:1px solid;
+    }
+    .pbadge .dot-sm { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+    .pbadge.yt    { border-color:rgba(255,68,68,.3);  color:#ff6b6b; background:rgba(255,68,68,.06); }
+    .pbadge.sp    { border-color:rgba(29,185,84,.3);  color:#1db954; background:rgba(29,185,84,.06); }
+    .pbadge.am    { border-color:rgba(252,100,100,.3);color:#fc6464; background:rgba(252,100,100,.06); }
+    .pbadge.flo   { border-color:rgba(110,100,255,.3);color:#8b83ff; background:rgba(110,100,255,.06); }
+    .pbadge.melon { border-color:rgba(0,205,60,.3);   color:#00cd3c; background:rgba(0,205,60,.06); }
+    .pbadge.bugs  { border-color:rgba(255,120,0,.3);  color:#ff7800; background:rgba(255,120,0,.06); }
+    .pbadge .dot-sm.yt    { background:#ff4444; }
+    .pbadge .dot-sm.sp    { background:#1db954; }
+    .pbadge .dot-sm.am    { background:#fc6464; }
+    .pbadge .dot-sm.flo   { background:#8b83ff; }
+    .pbadge .dot-sm.melon { background:#00cd3c; }
+    .pbadge .dot-sm.bugs  { background:#ff7800; }
+    .pbadge-status {
+      font-size:10px; font-weight:400; padding:1px 5px; border-radius:4px;
+      background:rgba(255,255,255,.07); color:var(--t3);
+    }
+    .pbadge-status.live { background:rgba(29,185,84,.12); color:#1db954; }
+    .platforms-note { font-size:11px; color:var(--t3); display:flex; align-items:center; gap:5px; }
+    .platforms-note::before { content:''; display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--pl); }
+
+    /* URL input */
+    .url-box {
+      background:var(--bg3); border:1px solid var(--bd); border-radius:14px;
+      padding:18px 20px; max-width:540px; margin:0 auto 16px; transition:border-color .2s;
+    }
+    .url-box:focus-within { border-color:var(--pl); box-shadow:0 0 0 3px rgba(124,58,237,.1); }
+    .url-label { font-size:12px; color:var(--t2); margin-bottom:9px; display:flex; align-items:center; gap:6px; }
+    .yt-dot { display:inline-block; width:9px; height:9px; border-radius:50%; background:#ff4444; }
+    .url-row { display:flex; gap:8px; }
+    .url-input {
+      flex:1; background:var(--bg2); border:1px solid var(--bd); border-radius:9px;
+      padding:10px 13px; font-size:13px; color:var(--t1); font-family:inherit; outline:none; transition:border-color .2s;
+    }
+    .url-input::placeholder { color:var(--t3); }
+    .url-input:focus { border-color:var(--pl); }
+    .btn-primary {
+      background:var(--grad); color:#fff; border:none; border-radius:9px;
+      padding:10px 16px; font-size:13px; font-weight:500; font-family:inherit;
+      cursor:pointer; transition:opacity .2s,transform .1s; white-space:nowrap;
+    }
+    .btn-primary:hover { opacity:.85; }
+    .btn-primary:active { transform:scale(.97); }
+
+    .or-div {
+      text-align:center; color:var(--t3); font-size:12px;
+      max-width:540px; margin:0 auto 16px; display:flex; align-items:center; gap:10px;
+    }
+    .or-div::before,.or-div::after { content:''; flex:1; height:1px; background:var(--bd); }
+
+    /* Situation cards */
+    .sit-quick { max-width:540px; margin:0 auto 52px; }
+    .sit-cards { display:grid; grid-template-columns:repeat(4,1fr); gap:9px; }
+    .sit-card {
+      background:var(--bg3); border:1px solid var(--bd); border-radius:13px;
+      padding:16px 8px; text-align:center; cursor:pointer; transition:all .18s;
+    }
+    .sit-card:hover { border-color:var(--sit-br); background:var(--bg3h); }
+    .sit-card-emoji { font-size:24px; margin-bottom:7px; }
+    .sit-card-label { font-size:12px; font-weight:500; }
+
+    /* ── STEP 1: FILTER + LIST ── */
+    .sec-header { padding:24px 0 16px; }
+    .sec-title { font-size:20px; font-weight:700; margin-bottom:4px; }
+    .sec-sub { font-size:13px; color:var(--t2); }
+    .url-badge {
+      display:inline-flex; align-items:center; gap:5px;
+      font-size:11px; color:var(--t2); background:var(--bg3); border:1px solid var(--bd);
+      border-radius:7px; padding:3px 9px; margin-top:8px;
+    }
+
+    /* Search */
+    .search-wrap { position:relative; margin-bottom:14px; }
+    .search-icon { position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--t3); font-size:14px; pointer-events:none; }
+    .search-input {
+      width:100%; background:var(--bg3); border:1px solid var(--bd); border-radius:11px;
+      padding:11px 14px 11px 36px; font-size:13px; color:var(--t1); font-family:inherit; outline:none; transition:border-color .2s;
+    }
+    .search-input::placeholder { color:var(--t3); }
+    .search-input:focus { border-color:var(--pl); }
+    .search-clear {
+      position:absolute; right:10px; top:50%; transform:translateY(-50%);
+      display:none; background:var(--bg2); border:1px solid var(--bd); border-radius:6px;
+      padding:2px 8px; font-size:11px; color:var(--t3); cursor:pointer; font-family:inherit;
+    }
+    .search-clear.visible { display:block; }
+    .search-clear:hover { color:var(--t1); }
+
+    /* Filter panel */
+    .filter-panel { background:var(--bg2); border:1px solid var(--bd); border-radius:13px; padding:16px 18px; margin-bottom:16px; }
+    .filter-panel-title { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.6px; color:var(--t3); margin-bottom:12px; }
+    .filter-group { margin-bottom:11px; }
+    .filter-group:last-child { margin-bottom:0; }
+    .filter-group-label { font-size:11px; color:var(--t3); margin-bottom:6px; }
+    .chip-list { display:flex; flex-wrap:wrap; gap:5px; }
+    .chip { border-radius:20px; padding:4px 11px; font-size:12px; font-weight:500; cursor:pointer; border:1px solid transparent; transition:all .14s; user-select:none; }
+    .chip.mood     { border-color:var(--mood-br); color:var(--t2); }
+    .chip.mood:hover, .chip.mood.active { background:var(--mood-bg); color:var(--mood-fg); border-color:var(--mood-fg); }
+    .chip.situation{ border-color:var(--sit-br);  color:var(--t2); }
+    .chip.situation:hover, .chip.situation.active { background:var(--sit-bg); color:var(--sit-fg); border-color:var(--sit-fg); }
+    .chip.genre    { border-color:var(--gen-br);  color:var(--t2); }
+    .chip.genre:hover, .chip.genre.active { background:var(--gen-bg); color:var(--gen-fg); border-color:var(--gen-fg); }
+    .chip.artist   { border-color:var(--art-br);  color:var(--t2); }
+    .chip.artist:hover, .chip.artist.active { background:var(--art-bg); color:var(--art-fg); border-color:var(--art-fg); }
+
+    /* Count bar */
+    .count-bar { display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--bd); margin-bottom:4px; }
+    .count-text { font-size:13px; color:var(--t2); }
+    .count-text strong { color:var(--pl); }
+    .clear-btn { font-size:11px; color:var(--t3); background:none; border:none; font-family:inherit; padding:3px 7px; border-radius:6px; cursor:pointer; transition:color .2s; }
+    .clear-btn:hover { color:var(--t2); }
+
+    /* Song list */
+    .song-list { margin-bottom:14px; }
+    .song-item {
+      display:flex; align-items:center; gap:12px; padding:10px 10px;
+      border-radius:10px; cursor:pointer; border:1px solid transparent; transition:background .13s,border-color .13s;
+    }
+    .song-item:hover { background:var(--bg3); border-color:var(--bd); }
+    .song-num { width:20px; text-align:center; font-size:12px; color:var(--t3); flex-shrink:0; }
+    .song-avatar {
+      width:40px; height:40px; border-radius:9px; flex-shrink:0;
+      display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:700; border:1px solid;
+    }
+    .song-info { flex:1; min-width:0; }
+    .song-title { font-size:13px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .song-artist { font-size:12px; color:var(--t2); margin-top:1px; }
+    .song-tags { display:flex; flex-wrap:wrap; gap:4px; flex-shrink:0; max-width:180px; justify-content:flex-end; }
+    .stag { font-size:10px; padding:2px 7px; border-radius:10px; }
+    .stag.mood     { background:var(--mood-bg); color:var(--mood-fg); }
+    .stag.situation{ background:var(--sit-bg);  color:var(--sit-fg); }
+    .stag.genre    { background:var(--gen-bg);  color:var(--gen-fg); }
+
+    .no-result { text-align:center; padding:40px 20px; color:var(--t3); }
+    .no-result-icon { font-size:36px; margin-bottom:10px; }
+    .no-result p { font-size:13px; line-height:1.7; }
+
+    /* Sticky make button */
+    .make-wrap {
+      position:sticky; bottom:0; padding:12px 0 18px;
+      background:linear-gradient(to top,var(--bg) 65%,transparent);
+    }
+    .btn-make {
+      width:100%; padding:14px; background:var(--grad); border:none; border-radius:12px;
+      color:#fff; font-size:15px; font-weight:700; font-family:inherit; cursor:pointer; transition:opacity .2s,transform .1s; letter-spacing:-.2px;
+    }
+    .btn-make:hover { opacity:.87; }
+    .btn-make:active { transform:scale(.98); }
+    .btn-make:disabled { opacity:.35; cursor:not-allowed; transform:none; }
+
+    /* ── STEP 2: RESULTS ── */
+    .result-hero { text-align:center; padding:32px 0 20px; }
+    .result-hero-icon { font-size:42px; margin-bottom:12px; }
+    .result-hero h2 { font-size:22px; font-weight:700; margin-bottom:6px; }
+    .result-hero p { color:var(--t2); font-size:13px; }
+    .result-tags { display:flex; flex-wrap:wrap; gap:5px; justify-content:center; margin:12px 0; }
+
+    .result-card {
+      background:var(--bg3); border:1px solid var(--bd); border-radius:12px;
+      padding:14px; margin-bottom:8px; cursor:pointer; display:flex; gap:12px; align-items:flex-start; transition:all .17s;
+    }
+    .result-card:hover { border-color:var(--bd2); background:var(--bg3h); transform:translateY(-1px); }
+    .result-avatar { width:48px; height:48px; border-radius:10px; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:700; }
+    .result-info { flex:1; }
+    .result-title { font-size:14px; font-weight:600; margin-bottom:3px; }
+    .result-artist { font-size:12px; color:var(--t2); margin-bottom:8px; }
+    .result-stags { display:flex; flex-wrap:wrap; gap:4px; }
+    .ai-hint { font-size:11px; color:var(--t3); margin-top:7px; }
+    .ai-hint em { color:var(--pl); font-style:normal; }
+
+    .action-bar { display:flex; gap:8px; padding:14px 0 50px; }
+    .btn-sec {
+      flex:1; padding:12px; background:transparent; border:1px solid var(--bd);
+      border-radius:10px; color:var(--t1); font-size:13px; font-weight:500; font-family:inherit; cursor:pointer; transition:all .17s;
+    }
+    .btn-sec:hover { background:var(--bg3); border-color:var(--bd2); }
+
+    /* ── MODAL ── */
+    .modal-backdrop { display:none; position:fixed; inset:0; background:rgba(0,0,0,.72); z-index:300; align-items:flex-end; justify-content:center; padding:16px; }
+    .modal-backdrop.active { display:flex; animation:bkIn .18s ease; }
+    @keyframes bkIn { from{opacity:0} to{opacity:1} }
+    .modal {
+      background:var(--bg3); border:1px solid var(--bd); border-radius:18px; padding:20px;
+      width:100%; max-width:540px; max-height:84vh; overflow-y:auto; animation:mdIn .22s ease;
+    }
+    @keyframes mdIn { from{transform:translateY(26px);opacity:0} to{transform:none;opacity:1} }
+    .modal-top { display:flex; justify-content:flex-end; margin-bottom:14px; }
+    .modal-close {
+      background:var(--bg2); border:1px solid var(--bd); border-radius:8px;
+      padding:5px 10px; color:var(--t2); cursor:pointer; font-size:12px; font-family:inherit; transition:all .16s;
+    }
+    .modal-close:hover { color:var(--t1); border-color:var(--bd2); }
+    .modal-head { display:flex; gap:12px; align-items:center; margin-bottom:18px; }
+    .modal-avatar { width:54px; height:54px; border-radius:12px; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:700; }
+    .modal-title { font-size:17px; font-weight:700; margin-bottom:3px; }
+    .modal-artist { font-size:13px; color:var(--t2); }
+    .modal-sec { margin-bottom:16px; }
+    .modal-sec-label {
+      font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.7px; color:var(--t3);
+      margin-bottom:8px; display:flex; align-items:center; gap:5px;
+    }
+    .modal-sec-label::before { content:''; display:inline-block; width:3px; height:10px; background:var(--grad); border-radius:2px; }
+    .ai-box { background:var(--bg2); border:1px solid var(--bd); border-left:3px solid var(--pl); border-radius:9px; padding:12px; font-size:13px; color:var(--t2); line-height:1.75; }
+    .tag-line { display:flex; align-items:center; gap:6px; margin-bottom:8px; }
+    .tag-line:last-child { margin-bottom:0; }
+    .tag-line-label { font-size:10px; color:var(--t3); min-width:36px; flex-shrink:0; }
+
+    /* Stats */
+    .stats { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+    .stat { background:var(--bg2); border:1px solid var(--bd); border-radius:9px; padding:11px; text-align:center; }
+    .stat-val { font-size:16px; font-weight:700; background:var(--grad); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .stat-val.sm { font-size:12px; }
+    .stat-lbl { font-size:10px; color:var(--t3); margin-top:2px; }
+
+    /* Related songs */
+    .related-list { display:flex; flex-direction:column; gap:7px; }
+    .related-item {
+      display:flex; align-items:center; gap:10px; padding:9px 11px;
+      background:var(--bg2); border:1px solid var(--bd); border-radius:9px;
+      cursor:pointer; transition:all .15s;
+    }
+    .related-item:hover { border-color:var(--bd2); background:var(--bg3); }
+    .related-avatar { width:34px; height:34px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; flex-shrink:0; }
+    .related-info { flex:1; min-width:0; }
+    .related-title { font-size:13px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .related-artist { font-size:11px; color:var(--t2); }
+    .related-arrow { color:var(--t3); font-size:12px; flex-shrink:0; }
+
+    .note { font-size:11px; color:var(--t3); text-align:center; padding:11px 0 0; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width:4px; } ::-webkit-scrollbar-track { background:transparent; }
+    ::-webkit-scrollbar-thumb { background:var(--bd); border-radius:2px; }
+
+    @media (max-width:500px) {
+      .hero h1 { font-size:24px; }
+      .sit-cards { grid-template-columns:repeat(2,1fr); }
+      .song-tags { display:none; }
+      .stats { grid-template-columns:repeat(2,1fr); }
+      .platforms-grid { gap:6px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-left">
+    <button class="back-btn" id="backBtn" onclick="goBack()">&#8592; 뒤로</button>
+    <div class="logo">Playlist Maker</div>
+  </div>
+  <div class="header-right">
+    <div class="step-dots">
+      <div class="dot active" id="dot0"></div>
+      <div class="dot" id="dot1"></div>
+      <div class="dot" id="dot2"></div>
+    </div>
+  </div>
+</header>
+
+<!-- LOADING -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner"></div>
+  <div class="loading-msg" id="loadingMsg">플레이리스트 분석 중...</div>
+  <div class="loading-bar-wrap"><div class="loading-bar" id="loadingBar"></div></div>
+</div>
+
+<!-- ═══ STEP 0: LANDING ═══ -->
+<section class="step-section active" id="step0">
+  <div class="container">
+    <div class="hero">
+      <div class="hero-badge">Fake Door MVP · 샘플 데이터로 시뮬레이션</div>
+      <h1>이미 듣는 곡에서<br><span class="grad">딱 맞는 플레이리스트</span>를</h1>
+      <p>좋아하는 플랫폼의 플레이리스트 링크를 넣으면, 무드·상황·장르에 맞는 곡만 골라 새 플레이리스트를 만들어 드려요.</p>
+    </div>
+
+    <!-- Platform section -->
+    <div class="platforms-section">
+      <div class="platforms-label">연동 지원 플랫폼</div>
+      <div class="platforms-grid">
+        <div class="pbadge yt">  <span class="dot-sm yt"></span>  YouTube     <span class="pbadge-status live">시뮬레이션</span></div>
+        <div class="pbadge sp">  <span class="dot-sm sp"></span>  Spotify     <span class="pbadge-status">준비중</span></div>
+        <div class="pbadge am">  <span class="dot-sm am"></span>  Apple Music <span class="pbadge-status">준비중</span></div>
+        <div class="pbadge flo"> <span class="dot-sm flo"></span> FLO         <span class="pbadge-status">준비중</span></div>
+        <div class="pbadge melon"><span class="dot-sm melon"></span>Melon      <span class="pbadge-status">준비중</span></div>
+        <div class="pbadge bugs"><span class="dot-sm bugs"></span> Bugs       <span class="pbadge-status">준비중</span></div>
+      </div>
+      <div class="platforms-note">현재 버전은 샘플 데이터로 시뮬레이션됩니다</div>
+    </div>
+
+    <!-- URL Input -->
+    <div class="url-box">
+      <div class="url-label"><span class="yt-dot"></span>YouTube 플레이리스트 링크 입력</div>
+      <div class="url-row">
+        <input class="url-input" id="urlInput" type="text" placeholder="https://www.youtube.com/playlist?list=..." />
+        <button class="btn-primary" onclick="handleUrl()">불러오기</button>
+      </div>
+    </div>
+
+    <div class="or-div">또는 상황을 바로 선택</div>
+
+    <!-- 8 Situation cards -->
+    <div class="sit-quick">
+      <div class="sit-cards">
+        <div class="sit-card" onclick="handleSit('운동')">       <div class="sit-card-emoji">🏃</div><div class="sit-card-label">운동</div></div>
+        <div class="sit-card" onclick="handleSit('공부/집중')">  <div class="sit-card-emoji">📚</div><div class="sit-card-label">공부</div></div>
+        <div class="sit-card" onclick="handleSit('퇴근길')">     <div class="sit-card-emoji">🌆</div><div class="sit-card-label">퇴근길</div></div>
+        <div class="sit-card" onclick="handleSit('파티')">       <div class="sit-card-emoji">🎉</div><div class="sit-card-label">파티</div></div>
+        <div class="sit-card" onclick="handleSit('드라이브')">   <div class="sit-card-emoji">🚗</div><div class="sit-card-label">드라이브</div></div>
+        <div class="sit-card" onclick="handleSit('카페')">       <div class="sit-card-emoji">☕</div><div class="sit-card-label">카페</div></div>
+        <div class="sit-card" onclick="handleSit('데이트')">     <div class="sit-card-emoji">💕</div><div class="sit-card-label">데이트</div></div>
+        <div class="sit-card" onclick="handleSit('비오는날')">   <div class="sit-card-emoji">🌧</div><div class="sit-card-label">비오는날</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ STEP 1: FILTER + LIST ═══ -->
+<section class="step-section" id="step1">
+  <div class="container">
+    <div class="sec-header">
+      <div class="sec-title" id="s1Title">플레이리스트를 불러왔어요!</div>
+      <div class="sec-sub">조건을 고르면 실시간으로 필터링됩니다</div>
+      <div class="url-badge"><span class="yt-dot" style="width:7px;height:7px;"></span><span id="badgeText">샘플 데이터</span></div>
+    </div>
+
+    <!-- Search -->
+    <div class="search-wrap">
+      <span class="search-icon">&#9906;</span>
+      <input class="search-input" id="searchInput" type="text" placeholder="곡 제목 또는 아티스트 검색..." oninput="handleSearch(this.value)" />
+      <button class="search-clear" id="searchClear" onclick="clearSearch()">지우기</button>
+    </div>
+
+    <!-- Filter panel -->
+    <div class="filter-panel">
+      <div class="filter-panel-title">조건 선택</div>
+      <div class="filter-group">
+        <div class="filter-group-label">분위기</div>
+        <div class="chip-list" id="moodChips"></div>
+      </div>
+      <div class="filter-group">
+        <div class="filter-group-label">상황</div>
+        <div class="chip-list" id="sitChips"></div>
+      </div>
+      <div class="filter-group">
+        <div class="filter-group-label">장르</div>
+        <div class="chip-list" id="genChips"></div>
+      </div>
+      <div class="filter-group">
+        <div class="filter-group-label">가수</div>
+        <div class="chip-list" id="artChips"></div>
+      </div>
+    </div>
+
+    <div class="count-bar">
+      <div class="count-text"><strong id="filtCount">15</strong>곡 선택됨</div>
+      <button class="clear-btn" onclick="clearAll()">필터 초기화</button>
+    </div>
+    <div class="song-list" id="songList"></div>
+    <div class="make-wrap">
+      <button class="btn-make" id="makeBtn" onclick="goResults()">15곡으로 플레이리스트 만들기 →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ STEP 2: RESULTS ═══ -->
+<section class="step-section" id="step2">
+  <div class="container">
+    <div class="result-hero">
+      <div class="result-hero-icon">🎶</div>
+      <h2>플레이리스트 완성!</h2>
+      <p id="resultSub">선택한 조건에 맞는 곡을 골랐어요</p>
+      <div class="result-tags" id="resultTags"></div>
+    </div>
+    <div id="resultList"></div>
+    <div class="action-bar">
+      <button class="btn-sec" onclick="goBack()">← 조건 다시 선택</button>
+      <button class="btn-sec" onclick="resetAll()">처음부터</button>
+    </div>
+  </div>
+</section>
+
+<!-- MODAL -->
+<div class="modal-backdrop" id="backdrop" onclick="backdropClick(event)">
+  <div class="modal" id="modal">
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────────
+//  DATA
+// ─────────────────────────────────────────────────────────────
+const SONGS = [
+  { id:1,  title:"Dynamite",           artist:"BTS",                   aKey:"BTS",          year:2020, color:"#8b5cf6",
+    mood:["신나는","에너제틱"],    situation:["파티","운동","아침"],        genre:["팝","댄스"],
+    bpm:114, energy:"높음", vibe:"밝고 경쾌함",
+    ai:"BPM 114의 밝고 경쾌한 디스코 팝. 영어 가사 기반 업템포 트랙으로, 파티와 운동 모두에 어울리는 긍정적인 에너지가 특징입니다." },
+
+  { id:2,  title:"밤편지",             artist:"아이유 (IU)",            aKey:"아이유",        year:2017, color:"#0ea5e9",
+    mood:["감성적인","따뜻한"],    situation:["퇴근길","혼자있을때","새벽"], genre:["인디","발라드"],
+    bpm:68, energy:"낮음", vibe:"감성적이고 따뜻함",
+    ai:"잔잔한 어쿠스틱 기타와 피아노 중심 발라드. 편지 형식의 가사가 그리움과 따뜻함을 전달하며, 조용한 밤이나 새벽에 특히 잘 어울립니다." },
+
+  { id:3,  title:"Instagram",          artist:"DEAN",                  aKey:"DEAN",         year:2016, color:"#6366f1",
+    mood:["몽환적인","감성적인"],  situation:["퇴근길","드라이브","새벽"],  genre:["R&B"],
+    bpm:78, energy:"중간", vibe:"몽환적이고 감각적",
+    ai:"다크하고 몽환적인 R&B 사운드. 소셜미디어 시대의 고독을 감각적으로 표현하며, 밤 드라이브나 새벽 분위기에 탁월합니다." },
+
+  { id:4,  title:"Any Song",           artist:"Zico",                  aKey:"Zico",         year:2020, color:"#f59e0b",
+    mood:["신나는","에너제틱"],    situation:["파티","운동","드라이브"],    genre:["힙합","댄스"],
+    bpm:121, energy:"높음", vibe:"신나고 중독적",
+    ai:"클럽 비트 위 중독성 있는 훅이 반복되는 파티 트랙. 장르·분위기 불문 어디서나 분위기를 올리는 데 탁월합니다." },
+
+  { id:5,  title:"연애소설",           artist:"Epik High ft. 선우정아", aKey:"Epik High",    year:2017, color:"#64748b",
+    mood:["감성적인","설레는"],    situation:["비오는날","퇴근길","혼자있을때"], genre:["힙합","인디"],
+    bpm:85, energy:"낮음", vibe:"서정적이고 감성적",
+    ai:"비 오는 날 분위기에 최적화된 감성 힙합. 선우정아 보컬과 타블로의 서정적 가사가 어우러져 깊은 감정적 공명을 만듭니다." },
+
+  { id:6,  title:"자나깨나",           artist:"Crush",                 aKey:"Crush",        year:2014, color:"#ec4899",
+    mood:["설레는","따뜻한"],      situation:["데이트","드라이브","카페"],  genre:["R&B","소울"],
+    bpm:92, energy:"중간", vibe:"달콤하고 설레임",
+    ai:"부드럽고 따뜻한 R&B 소울. 사랑에 빠진 설레임을 담담하게 표현하며, 데이트나 드라이브 BGM으로 완벽합니다." },
+
+  { id:7,  title:"저 별",             artist:"Heize",                 aKey:"Heize",        year:2016, color:"#475569",
+    mood:["감성적인","몽환적인"],  situation:["혼자있을때","비오는날","새벽"], genre:["인디","R&B"],
+    bpm:72, energy:"낮음", vibe:"쓸쓸하고 몽환적",
+    ai:"나지막한 보컬과 미니멀한 비트의 조합. 밤의 쓸쓸함과 그리움을 섬세하게 표현해내는 감성 트랙입니다." },
+
+  { id:8,  title:"여행",              artist:"볼빨간사춘기",           aKey:"볼빨간사춘기",   year:2016, color:"#f97316",
+    mood:["설레는","따뜻한"],      situation:["드라이브","데이트","여행"],  genre:["인디","팝"],
+    bpm:105, energy:"중간", vibe:"설레고 경쾌함",
+    ai:"경쾌하고 따뜻한 인디팝. 새로운 시작의 설레임을 담은 가사가 봄날 드라이브나 여행 출발 전 분위기와 잘 어울립니다." },
+
+  { id:9,  title:"Power",             artist:"EXO",                   aKey:"EXO",          year:2017, color:"#10b981",
+    mood:["신나는","에너제틱"],    situation:["운동","파티","아침"],        genre:["팝","댄스"],
+    bpm:130, energy:"높음", vibe:"강렬하고 파워풀",
+    ai:"강렬한 신스 비트와 중독성 높은 훅. 에너지 넘치는 K-pop 댄스 팝으로 운동 중 동기부여에 탁월합니다." },
+
+  { id:10, title:"How You Like That", artist:"BLACKPINK",             aKey:"BLACKPINK",    year:2020, color:"#ef4444",
+    mood:["강렬한","에너제틱"],    situation:["운동","파티"],              genre:["댄스","팝"],
+    bpm:128, energy:"높음", vibe:"강렬하고 카리스마틱",
+    ai:"강렬한 드롭과 EDM 요소가 결합된 K-pop. 파워풀한 보컬과 카리스마 넘치는 에너지가 어디서든 주목을 끕니다." },
+
+  { id:11, title:"좋은 날",           artist:"아이유 (IU)",            aKey:"아이유",        year:2010, color:"#06b6d4",
+    mood:["설레는","신나는"],      situation:["드라이브","카페","아침","여행"], genre:["팝","인디"],
+    bpm:120, energy:"중간", vibe:"밝고 청량함",
+    ai:"밝고 경쾌한 팝 사운드에 3단 고음이 인상적인 곡. 맑은 에너지가 아침이나 드라이브 분위기를 한층 올려줍니다." },
+
+  { id:12, title:"놀이",              artist:"기리보이",               aKey:"기리보이",      year:2018, color:"#7c3aed",
+    mood:["여유로운","몽환적인"],  situation:["카페","공부/집중","새벽"],   genre:["힙합","R&B"],
+    bpm:88, energy:"낮음", vibe:"여유롭고 느긋함",
+    ai:"lo-fi에 가까운 여유로운 힙합 비트. 일상의 느긋한 여유를 담아내 카페나 공부 중 배경음악으로 제격입니다." },
+
+  { id:13, title:"HIP",               artist:"MAMAMOO",               aKey:"MAMAMOO",      year:2019, color:"#d946ef",
+    mood:["강렬한","신나는"],      situation:["파티","운동"],              genre:["댄스","팝"],
+    bpm:125, energy:"높음", vibe:"당당하고 강렬함",
+    ai:"자신감 넘치는 가사와 강렬한 퍼포먼스가 결합된 곡. 당당한 에너지가 운동이나 파티 분위기에 잘 맞습니다." },
+
+  { id:14, title:"파란하늘",          artist:"Beenzino",              aKey:"Beenzino",     year:2013, color:"#0284c7",
+    mood:["여유로운","설레는"],    situation:["드라이브","카페","여행"],    genre:["힙합"],
+    bpm:95, energy:"중간", vibe:"경쾌하고 자유로움",
+    ai:"맑은 날 어울리는 경쾌한 힙합 트랙. 젊은 날의 설레임과 자유를 담아 청량한 드라이브나 여행 분위기를 완성합니다." },
+
+  { id:15, title:"Give Love",         artist:"악동뮤지션 (AKMU)",      aKey:"AKMU",         year:2014, color:"#16a34a",
+    mood:["따뜻한","설레는"],      situation:["카페","공부/집중","아침"],   genre:["인디","팝"],
+    bpm:88, energy:"낮음", vibe:"따뜻하고 사랑스러움",
+    ai:"어쿠스틱 기반의 따뜻하고 사랑스러운 곡. 포근한 보컬과 가사가 카페나 집에서 듣기에 완벽한 분위기를 만듭니다." }
+];
+
+const TAGS = {
+  mood:      ["신나는","에너제틱","설레는","감성적인","따뜻한","몽환적인","강렬한","여유로운"],
+  situation: ["운동","공부/집중","파티","퇴근길","드라이브","비오는날","카페","혼자있을때","데이트","새벽","여행","아침"],
+  genre:     ["팝","힙합","R&B","댄스","인디","발라드","소울"],
+  artist:    [...new Set(SONGS.map(s => s.aKey))]
+};
+
+// ─────────────────────────────────────────────────────────────
+//  STATE
+// ─────────────────────────────────────────────────────────────
+const S = { step:0, mood:[], sit:[], gen:[], art:[], query:'', filtered:[...SONGS] };
+
+// ─────────────────────────────────────────────────────────────
+//  INIT
+// ─────────────────────────────────────────────────────────────
+function init() {
+  renderChips('mood',      'moodChips', TAGS.mood);
+  renderChips('situation', 'sitChips',  TAGS.situation);
+  renderChips('genre',     'genChips',  TAGS.genre);
+  renderChips('artist',    'artChips',  TAGS.artist);
+  renderSongs();
+}
+
+// ─────────────────────────────────────────────────────────────
+//  NAVIGATION
+// ─────────────────────────────────────────────────────────────
+function goStep(n) {
+  document.querySelectorAll('.step-section').forEach((el, i) => el.classList.toggle('active', i === n));
+  ['dot0','dot1','dot2'].forEach((id, i) => {
+    const d = document.getElementById(id);
+    d.classList.remove('active','done');
+    if (i === n) d.classList.add('active');
+    else if (i < n) d.classList.add('done');
+  });
+  S.step = n;
+  document.getElementById('backBtn').classList.toggle('visible', n > 0);
+  window.scrollTo(0, 0);
+}
+
+function goBack() {
+  if (S.step === 2) { goStep(1); renderSongs(); }
+  else if (S.step === 1) { resetAll(); }
+}
+
+// ─────────────────────────────────────────────────────────────
+//  LANDING
+// ─────────────────────────────────────────────────────────────
+function handleUrl() {
+  const v = document.getElementById('urlInput').value.trim();
+  if (!v) {
+    const inp = document.getElementById('urlInput');
+    inp.style.borderColor = '#ef4444';
+    inp.focus();
+    setTimeout(() => { inp.style.borderColor = ''; }, 1500);
+    return;
+  }
+  startLoad(v.length > 44 ? v.slice(0, 44) + '…' : v, false);
+}
+
+function handleSit(sit) {
+  S.mood = []; S.sit = [sit]; S.gen = []; S.art = [];
+  document.querySelectorAll('.chip').forEach(c =>
+    c.classList.toggle('active', c.dataset.type === 'situation' && c.dataset.tag === sit)
+  );
+  filter();
+  startLoad('상황 선택: ' + sit, true);
+}
+
+function startLoad(label, isSit) {
+  const overlay = document.getElementById('loadingOverlay');
+  const msg     = document.getElementById('loadingMsg');
+  const bar     = document.getElementById('loadingBar');
+
+  bar.style.transition = 'none';
+  bar.style.width = '0';
+  requestAnimationFrame(() => {
+    bar.style.transition = 'width 1.4s ease';
+    bar.style.width = '100%';
+  });
+
+  const msgs = isSit
+    ? [`'${S.sit[0]}' 곡 분석 중…`, 'AI 태깅 로딩…', '플레이리스트 준비 중…']
+    : ['YouTube 분석 중…', '곡 목록 불러오는 중…', 'AI 태깅 로딩…'];
+  let i = 0;
+  msg.textContent = msgs[0];
+  const t = setInterval(() => { msg.textContent = msgs[++i % msgs.length]; }, 460);
+
+  overlay.classList.add('active');
+  setTimeout(() => {
+    clearInterval(t);
+    overlay.classList.remove('active');
+    document.getElementById('badgeText').textContent = label;
+    document.getElementById('s1Title').textContent = isSit
+      ? `'${S.sit[0]}' 플레이리스트 준비 완료!`
+      : '플레이리스트를 불러왔어요!';
+    renderSongs();
+    updateMakeBtn();
+    goStep(1);
+  }, 1650);
+}
+
+// ─────────────────────────────────────────────────────────────
+//  SEARCH
+// ─────────────────────────────────────────────────────────────
+function handleSearch(v) {
+  S.query = v.trim().toLowerCase();
+  document.getElementById('searchClear').classList.toggle('visible', S.query.length > 0);
+  renderSongs();
+  updateMakeBtn();
+}
+
+function clearSearch() {
+  S.query = '';
+  document.getElementById('searchInput').value = '';
+  document.getElementById('searchClear').classList.remove('visible');
+  renderSongs();
+  updateMakeBtn();
+}
+
+// ─────────────────────────────────────────────────────────────
+//  FILTER / CHIPS
+// ─────────────────────────────────────────────────────────────
+function renderChips(type, id, tags) {
+  const el = document.getElementById(id);
+  el.innerHTML = '';
+  tags.forEach(tag => {
+    const c = document.createElement('div');
+    c.className = `chip ${type}`;
+    c.textContent = tag;
+    c.dataset.tag  = tag;
+    c.dataset.type = type;
+    c.onclick = () => toggleChip(type, tag);
+    el.appendChild(c);
+  });
+}
+
+function toggleChip(type, tag) {
+  const map = { mood:'mood', situation:'sit', genre:'gen', artist:'art' };
+  const key = map[type];
+  const arr = S[key];
+  const idx = arr.indexOf(tag);
+  if (idx >= 0) arr.splice(idx, 1); else arr.push(tag);
+  document.querySelectorAll(`.chip.${type}`).forEach(c =>
+    c.classList.toggle('active', S[key].includes(c.dataset.tag))
+  );
+  filter();
+}
+
+function clearAll() {
+  S.mood = []; S.sit = []; S.gen = []; S.art = [];
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  filter();
+}
+
+function filter() {
+  S.filtered = SONGS.filter(s => {
+    const mOk = !S.mood.length || S.mood.some(m => s.mood.includes(m));
+    const sOk = !S.sit.length  || S.sit.some(t  => s.situation.includes(t));
+    const gOk = !S.gen.length  || S.gen.some(g  => s.genre.includes(g));
+    const aOk = !S.art.length  || S.art.some(a  => s.aKey === a);
+    return mOk && sOk && gOk && aOk;
+  });
+  renderSongs();
+  updateMakeBtn();
+}
+
+function getDisplayed() {
+  if (!S.query) return S.filtered;
+  return S.filtered.filter(s =>
+    s.title.toLowerCase().includes(S.query) ||
+    s.artist.toLowerCase().includes(S.query) ||
+    s.aKey.toLowerCase().includes(S.query)
+  );
+}
+
+function updateMakeBtn() {
+  const n = getDisplayed().length;
+  document.getElementById('filtCount').textContent = n;
+  const btn = document.getElementById('makeBtn');
+  btn.textContent = n ? `${n}곡으로 플레이리스트 만들기 →` : '조건에 맞는 곡이 없습니다';
+  btn.disabled = !n;
+}
+
+// ─────────────────────────────────────────────────────────────
+//  SONG LIST (STEP 1)
+// ─────────────────────────────────────────────────────────────
+function renderSongs() {
+  const el = document.getElementById('songList');
+  if (!el) return;
+  const list = getDisplayed();
+  if (!list.length) {
+    el.innerHTML = `<div class="no-result"><div class="no-result-icon">🎵</div><p>조건에 맞는 곡이 없어요.<br>다른 조건을 시도해보세요.</p></div>`;
+    return;
+  }
+  el.innerHTML = list.map((s, i) => `
+    <div class="song-item" onclick="openModal(${s.id})">
+      <div class="song-num">${i+1}</div>
+      <div class="song-avatar" style="background:${s.color}20;color:${s.color};border-color:${s.color}38;">${s.artist[0]}</div>
+      <div class="song-info">
+        <div class="song-title">${s.title}</div>
+        <div class="song-artist">${s.artist}</div>
+      </div>
+      <div class="song-tags">
+        ${s.mood.slice(0,1).map(t=>`<span class="stag mood">${t}</span>`).join('')}
+        ${s.situation.slice(0,1).map(t=>`<span class="stag situation">${t}</span>`).join('')}
+        ${s.genre.slice(0,1).map(t=>`<span class="stag genre">${t}</span>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+// ─────────────────────────────────────────────────────────────
+//  RESULTS (STEP 2)
+// ─────────────────────────────────────────────────────────────
+function goResults() {
+  const list = getDisplayed();
+  if (!list.length) return;
+
+  const allTags = [
+    ...S.mood.map(t=>`<span class="chip mood active" style="cursor:default">${t}</span>`),
+    ...S.sit.map(t =>`<span class="chip situation active" style="cursor:default">${t}</span>`),
+    ...S.gen.map(t =>`<span class="chip genre active" style="cursor:default">${t}</span>`),
+    ...S.art.map(t =>`<span class="chip artist active" style="cursor:default">${t}</span>`)
+  ];
+  document.getElementById('resultTags').innerHTML = allTags.length
+    ? allTags.join('')
+    : `<span style="font-size:12px;color:var(--t3)">조건 없음 — 전체 ${SONGS.length}곡</span>`;
+
+  document.getElementById('resultSub').textContent =
+    `${list.length}곡 선택됨 · 곡을 탭하면 AI 분석과 연관곡을 볼 수 있어요`;
+
+  document.getElementById('resultList').innerHTML = list.map(s => `
+    <div class="result-card" onclick="openModal(${s.id})">
+      <div class="result-avatar" style="background:${s.color}20;color:${s.color};">${s.artist[0]}</div>
+      <div class="result-info">
+        <div class="result-title">${s.title}</div>
+        <div class="result-artist">${s.artist} · ${s.year}</div>
+        <div class="result-stags">
+          ${s.mood.map(t=>`<span class="stag mood">${t}</span>`).join('')}
+          ${s.situation.map(t=>`<span class="stag situation">${t}</span>`).join('')}
+          ${s.genre.map(t=>`<span class="stag genre">${t}</span>`).join('')}
+        </div>
+        <div class="ai-hint">🤖 <em>AI 분석 · 연관곡 보기</em></div>
+      </div>
+    </div>`).join('');
+
+  goStep(2);
+}
+
+// ─────────────────────────────────────────────────────────────
+//  MODAL
+// ─────────────────────────────────────────────────────────────
+function getRelated(song) {
+  return SONGS
+    .filter(s => s.id !== song.id)
+    .map(s => ({
+      song: s,
+      score: s.mood.filter(m => song.mood.includes(m)).length * 2
+           + s.situation.filter(t => song.situation.includes(t)).length * 3
+           + s.genre.filter(g => song.genre.includes(g)).length
+    }))
+    .filter(x => x.score > 0)
+    .sort((a,b) => b.score - a.score)
+    .slice(0, 3)
+    .map(x => x.song);
+}
+
+function openModal(id) {
+  const s = SONGS.find(x => x.id === id);
+  if (!s) return;
+  const related = getRelated(s);
+  document.getElementById('modalBody').innerHTML = `
+    <div class="modal-top"><button class="modal-close" onclick="closeModal()">닫기 ✕</button></div>
+    <div class="modal-head">
+      <div class="modal-avatar" style="background:${s.color}20;color:${s.color};">${s.artist[0]}</div>
+      <div>
+        <div class="modal-title">${s.title}</div>
+        <div class="modal-artist">${s.artist} · ${s.year}</div>
+      </div>
+    </div>
+
+    <div class="modal-sec">
+      <div class="modal-sec-label">AI 분석 코멘트</div>
+      <div class="ai-box">${s.ai}</div>
+    </div>
+
+    <div class="modal-sec">
+      <div class="modal-sec-label">분위기 · 상황 · 장르</div>
+      <div class="tag-line"><span class="tag-line-label">분위기</span>${s.mood.map(t=>`<span class="stag mood">${t}</span>`).join('')}</div>
+      <div class="tag-line"><span class="tag-line-label">상황</span>${s.situation.map(t=>`<span class="stag situation">${t}</span>`).join('')}</div>
+      <div class="tag-line"><span class="tag-line-label">장르</span>${s.genre.map(t=>`<span class="stag genre">${t}</span>`).join('')}</div>
+    </div>
+
+    <div class="modal-sec">
+      <div class="modal-sec-label">오디오 특징</div>
+      <div class="stats">
+        <div class="stat"><div class="stat-val">${s.bpm}</div><div class="stat-lbl">BPM</div></div>
+        <div class="stat"><div class="stat-val">${s.energy}</div><div class="stat-lbl">에너지</div></div>
+        <div class="stat"><div class="stat-val sm">${s.vibe}</div><div class="stat-lbl">분위기</div></div>
+      </div>
+    </div>
+
+    ${related.length ? `
+    <div class="modal-sec">
+      <div class="modal-sec-label">연관곡</div>
+      <div class="related-list">
+        ${related.map(r => `
+          <div class="related-item" onclick="openModal(${r.id})">
+            <div class="related-avatar" style="background:${r.color}20;color:${r.color};">${r.artist[0]}</div>
+            <div class="related-info">
+              <div class="related-title">${r.title}</div>
+              <div class="related-artist">${r.artist}</div>
+            </div>
+            <span class="related-arrow">&#8250;</span>
+          </div>`).join('')}
+      </div>
+    </div>` : ''}
+
+    <div class="note">실제 AI 분석이 아닌 샘플 데이터입니다</div>`;
+  document.getElementById('backdrop').classList.add('active');
+}
+
+function closeModal() { document.getElementById('backdrop').classList.remove('active'); }
+function backdropClick(e) { if (e.target === document.getElementById('backdrop')) closeModal(); }
+
+// ─────────────────────────────────────────────────────────────
+//  RESET
+// ─────────────────────────────────────────────────────────────
+function resetAll() {
+  S.mood = []; S.sit = []; S.gen = []; S.art = []; S.query = ''; S.filtered = [...SONGS];
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  document.getElementById('urlInput').value = '';
+  const si = document.getElementById('searchInput');
+  if (si) { si.value = ''; }
+  document.getElementById('searchClear').classList.remove('visible');
+  goStep(0);
+}
+
+// ─────────────────────────────────────────────────────────────
+//  START
+// ─────────────────────────────────────────────────────────────
+init();
+</script>
+</body>
+</html>
