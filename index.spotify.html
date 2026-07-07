@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
@@ -70,6 +70,20 @@
     .pbadge-status.live { background:rgba(29,185,84,.12); color:#1db954; }
     .platforms-note { font-size:11px; color:var(--t3); display:flex; align-items:center; gap:5px; }
     .platforms-note::before { content:''; display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--pl); }
+
+    /* Spotify real API */
+    .spotify-live { background:rgba(29,185,84,.06); border:1px solid rgba(29,185,84,.28); border-radius:16px; padding:18px 20px; max-width:540px; margin:0 auto 22px; }
+    .spotify-live-top { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px; }
+    .spotify-live-title { font-size:13px; font-weight:700; color:#1db954; display:flex; align-items:center; gap:8px; }
+    .spotify-live-title::before { content:''; width:9px; height:9px; border-radius:50%; background:#1db954; }
+    .spotify-live-note { font-size:11px; color:var(--t3); line-height:1.6; margin-bottom:12px; }
+    .spotify-row { display:flex; gap:8px; margin-bottom:9px; }
+    .spotify-input,.spotify-select { flex:1; min-width:0; background:var(--bg2); border:1px solid var(--bd); border-radius:9px; padding:9px 12px; color:var(--t1); font-size:12px; font-family:inherit; outline:none; }
+    .spotify-input:focus,.spotify-select:focus { border-color:#1db954; }
+    .spotify-btn { background:#1db954; color:#06130a; border:none; border-radius:9px; padding:9px 12px; font-size:12px; font-weight:700; font-family:inherit; cursor:pointer; white-space:nowrap; }
+    .spotify-btn.secondary { background:transparent; color:#1db954; border:1px solid rgba(29,185,84,.45); }
+    .spotify-btn:disabled { opacity:.45; cursor:not-allowed; }
+    .spotify-status { min-height:18px; font-size:11px; color:var(--t2); line-height:1.6; }
 
     /* URL input */
     .url-box { background:var(--bg3); border:1px solid var(--bd); border-radius:14px; padding:18px 20px; max-width:540px; margin:0 auto 16px; transition:border-color .2s; }
@@ -328,6 +342,31 @@
       </div>
       <div class="platforms-note">클릭하면 해당 플랫폼에서 가져오는 시뮬레이션을 체험할 수 있어요</div>
     </div>
+    <div class="spotify-live">
+      <div class="spotify-live-top">
+        <div class="spotify-live-title">Spotify 실제 연동 실험</div>
+        <button class="spotify-btn secondary" onclick="spotifyLogout()">연결 해제</button>
+      </div>
+      <div class="spotify-live-note">
+        Spotify Developer Dashboard에서 Client ID를 만들고, Redirect URI에 이 페이지 주소를 등록하세요. 가져온 곡 70%에 추천곡 30%를 섞어 새 목록을 구성합니다.
+      </div>
+      <div class="spotify-row">
+        <input class="spotify-input" id="spotifyClientId" placeholder="Spotify Client ID" />
+        <button class="spotify-btn secondary" onclick="saveSpotifyClientId()">저장</button>
+        <button class="spotify-btn" onclick="spotifyLogin()">연결</button>
+      </div>
+      <div class="spotify-row">
+        <select class="spotify-select" id="spotifyPlaylistSelect">
+          <option value="">Spotify 연결 후 플레이리스트를 불러오세요</option>
+        </select>
+        <button class="spotify-btn secondary" onclick="loadSpotifyPlaylists()">목록</button>
+      </div>
+      <div class="spotify-row">
+        <button class="spotify-btn" onclick="importSelectedSpotifyPlaylist()">선택한 목록으로 7:3 만들기</button>
+        <button class="spotify-btn secondary" onclick="createSpotifyPlaylistFromCurrent()">현재 결과를 Spotify에 저장</button>
+      </div>
+      <div class="spotify-status" id="spotifyStatus">아직 Spotify에 연결되지 않았습니다.</div>
+    </div>
     <div class="url-box">
       <div class="url-label"><span class="yt-dot"></span>YouTube 플레이리스트 링크 입력</div>
       <div class="url-row">
@@ -526,7 +565,7 @@ const MOOD_GENRE = {
 // ═══════════════════════════════════════════════════════════
 //  SONGS  (30곡)
 // ═══════════════════════════════════════════════════════════
-const SONGS = [
+let SONGS = [
   { id:1,  title:"Dynamite",           artist:"BTS",                aKey:"BTS",          year:2020, color:"#8b5cf6",
     mood:["신나는","에너제틱"],    situation:["파티","운동","아침"],           genre:["팝","댄스"],
     bpm:114, energy:"높음", vibe:"밝고 경쾌함",
@@ -1420,7 +1459,381 @@ function makePlaylistFromSong(id) {
   startLoad(`"${s.title}" 기반`, true);
 }
 
+// ============================================================================
+//  SPOTIFY REAL API EXPERIMENT (PKCE, 70:30 mix)
+// ============================================================================
+const SPOTIFY_AUTH_URL = 'https://accounts.spotify.com/authorize';
+const SPOTIFY_TOKEN_URL = 'https://accounts.spotify.com/api/token';
+const SPOTIFY_API_URL = 'https://api.spotify.com/v1';
+const SPOTIFY_SCOPES = [
+  'playlist-read-private',
+  'playlist-read-collaborative',
+  'playlist-modify-private',
+  'playlist-modify-public',
+  'user-read-private'
+].join(' ');
+const SPOTIFY_STORAGE = {
+  clientId: 'spotify_client_id',
+  accessToken: 'spotify_access_token',
+  refreshToken: 'spotify_refresh_token',
+  expiresAt: 'spotify_expires_at',
+  verifier: 'spotify_pkce_verifier',
+  state: 'spotify_auth_state',
+  userId: 'spotify_user_id'
+};
+let spotifyImportedTracks = [];
+let spotifyRecommendedTracks = [];
+let spotifyLocalId = 100000;
+
+function spotifyStatus(msg) {
+  const el = document.getElementById('spotifyStatus');
+  if (el) el.textContent = msg;
+}
+
+function getSpotifyClientId() {
+  return (document.getElementById('spotifyClientId')?.value || localStorage.getItem(SPOTIFY_STORAGE.clientId) || '').trim();
+}
+
+function saveSpotifyClientId() {
+  const clientId = getSpotifyClientId();
+  if (!clientId) { spotifyStatus('Client ID를 먼저 입력하세요.'); return; }
+  localStorage.setItem(SPOTIFY_STORAGE.clientId, clientId);
+  spotifyStatus('Client ID를 저장했습니다. Spotify Dashboard의 Redirect URI가 현재 페이지 주소와 같아야 합니다.');
+}
+
+function spotifyRedirectUri() {
+  return window.location.origin + window.location.pathname;
+}
+
+function randomString(length = 64) {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
+  const bytes = new Uint8Array(length);
+  crypto.getRandomValues(bytes);
+  return [...bytes].map(b => chars[b % chars.length]).join('');
+}
+
+async function sha256(value) {
+  const data = new TextEncoder().encode(value);
+  return crypto.subtle.digest('SHA-256', data);
+}
+
+function base64Url(buffer) {
+  return btoa(String.fromCharCode(...new Uint8Array(buffer))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+async function spotifyLogin() {
+  const clientId = getSpotifyClientId();
+  if (!clientId) { spotifyStatus('Spotify Client ID를 입력하고 저장하세요.'); return; }
+  localStorage.setItem(SPOTIFY_STORAGE.clientId, clientId);
+
+  const verifier = randomString(96);
+  const challenge = base64Url(await sha256(verifier));
+  const state = randomString(24);
+  sessionStorage.setItem(SPOTIFY_STORAGE.verifier, verifier);
+  sessionStorage.setItem(SPOTIFY_STORAGE.state, state);
+
+  const params = new URLSearchParams({
+    response_type: 'code',
+    client_id: clientId,
+    scope: SPOTIFY_SCOPES,
+    redirect_uri: spotifyRedirectUri(),
+    state,
+    code_challenge_method: 'S256',
+    code_challenge: challenge
+  });
+  window.location.href = `${SPOTIFY_AUTH_URL}?${params.toString()}`;
+}
+
+async function handleSpotifyRedirect() {
+  const input = document.getElementById('spotifyClientId');
+  const savedClientId = localStorage.getItem(SPOTIFY_STORAGE.clientId);
+  if (input && savedClientId) input.value = savedClientId;
+
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get('code');
+  const state = params.get('state');
+  const error = params.get('error');
+  if (error) { spotifyStatus(`Spotify 인증 실패: ${error}`); return; }
+  if (!code) {
+    if (spotifyAccessToken()) spotifyStatus('Spotify 연결됨. 목록 버튼으로 플레이리스트를 불러오세요.');
+    return;
+  }
+
+  const expectedState = sessionStorage.getItem(SPOTIFY_STORAGE.state);
+  const verifier = sessionStorage.getItem(SPOTIFY_STORAGE.verifier);
+  const clientId = getSpotifyClientId();
+  if (!clientId || !verifier || state !== expectedState) {
+    spotifyStatus('Spotify 인증 상태를 확인할 수 없습니다. 다시 연결하세요.');
+    return;
+  }
+
+  spotifyStatus('Spotify 토큰 교환 중...');
+  const body = new URLSearchParams({
+    client_id: clientId,
+    grant_type: 'authorization_code',
+    code,
+    redirect_uri: spotifyRedirectUri(),
+    code_verifier: verifier
+  });
+  const res = await fetch(SPOTIFY_TOKEN_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body
+  });
+  if (!res.ok) {
+    spotifyStatus('토큰 교환에 실패했습니다. Redirect URI와 Client ID를 확인하세요.');
+    return;
+  }
+  const token = await res.json();
+  saveSpotifyToken(token);
+  sessionStorage.removeItem(SPOTIFY_STORAGE.verifier);
+  sessionStorage.removeItem(SPOTIFY_STORAGE.state);
+  history.replaceState({}, document.title, spotifyRedirectUri());
+  spotifyStatus('Spotify 연결 완료. 플레이리스트 목록을 불러오는 중...');
+  await loadSpotifyPlaylists();
+}
+
+function saveSpotifyToken(token) {
+  localStorage.setItem(SPOTIFY_STORAGE.accessToken, token.access_token);
+  if (token.refresh_token) localStorage.setItem(SPOTIFY_STORAGE.refreshToken, token.refresh_token);
+  localStorage.setItem(SPOTIFY_STORAGE.expiresAt, String(Date.now() + token.expires_in * 1000));
+}
+
+function spotifyAccessToken() {
+  const token = localStorage.getItem(SPOTIFY_STORAGE.accessToken);
+  const expiresAt = Number(localStorage.getItem(SPOTIFY_STORAGE.expiresAt) || 0);
+  if (!token || Date.now() > expiresAt - 30000) return '';
+  return token;
+}
+
+function spotifyLogout() {
+  Object.values(SPOTIFY_STORAGE).forEach(k => { localStorage.removeItem(k); sessionStorage.removeItem(k); });
+  const select = document.getElementById('spotifyPlaylistSelect');
+  if (select) select.innerHTML = '<option value="">Spotify 연결 후 플레이리스트를 불러오세요</option>';
+  spotifyStatus('Spotify 연결을 해제했습니다.');
+}
+
+async function spotifyApi(path, options = {}) {
+  const token = spotifyAccessToken();
+  if (!token) throw new Error('Spotify 연결이 필요합니다.');
+  const headers = { Authorization: `Bearer ${token}`, ...(options.headers || {}) };
+  const res = await fetch(`${SPOTIFY_API_URL}${path}`, { ...options, headers });
+  if (!res.ok) {
+    const detail = await res.text();
+    throw new Error(`Spotify API 오류 ${res.status}: ${detail}`);
+  }
+  return res.status === 204 ? null : res.json();
+}
+
+async function fetchAllSpotify(path) {
+  let url = `${SPOTIFY_API_URL}${path}`;
+  const token = spotifyAccessToken();
+  const items = [];
+  while (url) {
+    const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+    if (!res.ok) throw new Error(`Spotify API 오류 ${res.status}`);
+    const data = await res.json();
+    items.push(...(data.items || []));
+    url = data.next;
+  }
+  return items;
+}
+
+async function loadSpotifyPlaylists() {
+  try {
+    spotifyStatus('Spotify 플레이리스트 목록을 불러오는 중...');
+    const playlists = await fetchAllSpotify('/me/playlists?limit=50');
+    const select = document.getElementById('spotifyPlaylistSelect');
+    select.innerHTML = playlists.length
+      ? playlists.map(p => `<option value="${p.id}">${escapeHtml(p.name)} · ${p.tracks.total}곡</option>`).join('')
+      : '<option value="">가져올 플레이리스트가 없습니다</option>';
+    spotifyStatus(`${playlists.length}개의 Spotify 플레이리스트를 찾았습니다.`);
+  } catch (err) {
+    spotifyStatus(err.message || '플레이리스트 목록을 불러오지 못했습니다.');
+  }
+}
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"]/g, ch => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[ch]));
+}
+
+async function importSelectedSpotifyPlaylist() {
+  const select = document.getElementById('spotifyPlaylistSelect');
+  const playlistId = select?.value;
+  if (!playlistId) { spotifyStatus('가져올 Spotify 플레이리스트를 선택하세요.'); return; }
+  try {
+    spotifyStatus('Spotify 곡을 가져오는 중...');
+    spotifyLocalId = 100000;
+    const rawItems = await fetchAllSpotify(`/playlists/${playlistId}/tracks?limit=100&fields=items(track(id,name,uri,duration_ms,popularity,artists(id,name),album(images,release_date))),next`);
+    const baseTracks = rawItems.map(item => item.track).filter(t => t && t.id).map(normalizeSpotifyTrack);
+    spotifyImportedTracks = uniqueByUri(baseTracks);
+
+    spotifyStatus('추천 후보를 모으는 중...');
+    spotifyRecommendedTracks = await buildSpotifyRecommendations(spotifyImportedTracks);
+    const mixed = mixSpotifyTracks7030(spotifyImportedTracks, spotifyRecommendedTracks);
+    setSpotifySongs(mixed);
+
+    document.getElementById('badgeText').textContent = `Spotify 7:3 · ${select.options[select.selectedIndex].text}`;
+    document.getElementById('badgeDot').style.background = '#1db954';
+    document.getElementById('s1Title').textContent = 'Spotify 플레이리스트를 7:3으로 구성했어요!';
+    spotifyStatus(`가져온 곡 ${spotifyImportedTracks.length}곡 + 추천 ${mixed.filter(s => s.recommended).length}곡으로 구성했습니다.`);
+    goStep(1);
+  } catch (err) {
+    spotifyStatus(err.message || 'Spotify 플레이리스트를 가져오지 못했습니다.');
+  }
+}
+
+function normalizeSpotifyTrack(track, recommended = false) {
+  const artist = (track.artists || []).map(a => a.name).join(', ') || 'Unknown Artist';
+  const firstArtist = track.artists?.[0]?.name || artist;
+  const inferred = inferTagsFromSpotify(track, artist);
+  return {
+    id: spotifyLocalId++,
+    spotifyId: track.id,
+    spotifyUri: track.uri,
+    recommended,
+    title: track.name,
+    artist,
+    aKey: firstArtist,
+    year: Number((track.album?.release_date || '').slice(0, 4)) || '',
+    color: recommended ? '#1db954' : '#8b5cf6',
+    mood: inferred.mood,
+    situation: inferred.situation,
+    genre: inferred.genre,
+    bpm: '-',
+    energy: recommended ? '추천' : '원곡',
+    vibe: recommended ? '추천 삽입곡' : '사용자 플레이리스트',
+    ai: recommended
+      ? 'Spotify에서 가져온 사용자 플레이리스트의 아티스트 흐름을 바탕으로 중간에 삽입한 추천곡입니다.'
+      : 'Spotify에서 가져온 사용자 플레이리스트 곡입니다. 실제 AI 태깅 전 단계라 제목, 아티스트, 인기도 기반으로 기본 태그를 추정했습니다.'
+  };
+}
+
+function inferTagsFromSpotify(track, artistText) {
+  const text = `${track.name} ${artistText}`.toLowerCase();
+  const popularity = track.popularity || 0;
+  const mood = [];
+  const situation = [];
+  const genre = [];
+
+  if (popularity >= 70) mood.push('신나는');
+  if (/love|밤|night|비|rain|sad|blue|slow|편지|그리움/.test(text)) mood.push('감성적인');
+  if (/dance|party|mix|club|dynamite|super|beat/.test(text)) mood.push('에너제틱');
+  if (/drive|city|road|summer|여행/.test(text)) situation.push('드라이브');
+  if (/study|lofi|focus|piano|acoustic/.test(text)) situation.push('공부/집중');
+  if (/party|dance|club/.test(text)) situation.push('파티');
+  if (/rain|비/.test(text)) situation.push('비오는날');
+  if (/r&b|soul|dean|crush|heize/.test(text)) genre.push('R&B');
+  if (/hip|rap|zico|jay|kid|travis|drake/.test(text)) genre.push('힙합');
+  if (/ballad|iu|성시경|폴킴/.test(text)) genre.push('발라드');
+  if (/indie|혁오|잔나비|akmu/.test(text)) genre.push('인디');
+  if (/dance|club|edm/.test(text)) genre.push('댄스');
+  if (!genre.length) genre.push('팝');
+  if (!mood.length) mood.push(popularity >= 55 ? '설레는' : '여유로운');
+  if (!situation.length) situation.push(popularity >= 65 ? '드라이브' : '카페');
+  return { mood: [...new Set(mood)].slice(0, 2), situation: [...new Set(situation)].slice(0, 2), genre: [...new Set(genre)].slice(0, 2) };
+}
+
+async function buildSpotifyRecommendations(baseTracks) {
+  const baseUris = new Set(baseTracks.map(t => t.spotifyUri));
+  const artistCounts = new Map();
+  baseTracks.forEach(t => artistCounts.set(t.aKey, (artistCounts.get(t.aKey) || 0) + 1));
+  const topArtists = [...artistCounts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8).map(([name]) => name);
+  const found = [];
+
+  for (const artistName of topArtists) {
+    const q = encodeURIComponent(`artist:${artistName}`);
+    const data = await spotifyApi(`/search?type=track&limit=8&market=KR&q=${q}`);
+    (data.tracks?.items || []).forEach(track => {
+      if (!baseUris.has(track.uri)) found.push(normalizeSpotifyTrack(track, true));
+    });
+  }
+  return uniqueByUri(found).slice(0, Math.ceil(baseTracks.length * 3 / 7));
+}
+
+function uniqueByUri(tracks) {
+  const seen = new Set();
+  return tracks.filter(t => {
+    const key = t.spotifyUri || `${t.title}-${t.artist}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+function mixSpotifyTracks7030(baseTracks, recommendedTracks) {
+  const recTarget = Math.min(recommendedTracks.length, Math.ceil(baseTracks.length * 3 / 7));
+  const pickedRecs = recommendedTracks.slice(0, recTarget);
+  if (!pickedRecs.length) return baseTracks;
+
+  const result = [];
+  let recIndex = 0;
+  baseTracks.forEach((track, index) => {
+    result.push(track);
+    const expectedRecs = Math.floor(((index + 1) / baseTracks.length) * recTarget);
+    while (recIndex < expectedRecs && pickedRecs[recIndex]) {
+      result.push(pickedRecs[recIndex]);
+      recIndex++;
+    }
+  });
+  while (recIndex < pickedRecs.length) result.push(pickedRecs[recIndex++]);
+  return result;
+}
+
+function setSpotifySongs(tracks) {
+  SONGS = tracks;
+  S.mood = []; S.sit = []; S.gen = []; S.art = []; S.query = ''; S.playlist = [...SONGS];
+  TAGS.artist = [...new Set(SONGS.map(s => s.aKey))].slice(0, 24);
+  renderChips('artist', 'artChips', TAGS.artist);
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active','inferred'));
+  const searchInput = document.getElementById('searchInput');
+  if (searchInput) searchInput.value = '';
+  const clear = document.getElementById('searchClear');
+  if (clear) clear.classList.remove('visible');
+  renderSongs();
+  updateMakeBtn();
+}
+
+async function createSpotifyPlaylistFromCurrent() {
+  const tracks = getDisplayed().filter(t => t.spotifyUri);
+  if (!tracks.length) { spotifyStatus('Spotify에 저장할 실제 Spotify 곡이 없습니다.'); return; }
+  try {
+    spotifyStatus('Spotify에 새 플레이리스트를 만드는 중...');
+    let userId = localStorage.getItem(SPOTIFY_STORAGE.userId);
+    if (!userId) {
+      const me = await spotifyApi('/me');
+      userId = me.id;
+      localStorage.setItem(SPOTIFY_STORAGE.userId, userId);
+    }
+    const created = await spotifyApi(`/users/${encodeURIComponent(userId)}/playlists`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: `Playlist Maker 7:3 ${new Date().toLocaleDateString('ko-KR')}`,
+        description: '사용자 Spotify 플레이리스트 70% + 추천곡 30%로 만든 목록',
+        public: false
+      })
+    });
+    for (let i = 0; i < tracks.length; i += 100) {
+      await spotifyApi(`/playlists/${created.id}/tracks`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ uris: tracks.slice(i, i + 100).map(t => t.spotifyUri) })
+      });
+    }
+    spotifyStatus(`Spotify에 저장 완료: ${created.name}`);
+    window.open(created.external_urls.spotify, '_blank', 'noopener');
+  } catch (err) {
+    spotifyStatus(err.message || 'Spotify 저장에 실패했습니다.');
+  }
+}
+
 init();
+handleSpotifyRedirect();
 </script>
 </body>
 </html>
+
+
+
+
