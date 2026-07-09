@@ -47,59 +47,49 @@
     .loading-bar-wrap { width:180px; height:3px; background:var(--bd); border-radius:2px; overflow:hidden; }
     .loading-bar { height:100%; background:var(--grad); border-radius:2px; width:0; }
 
-    /* STEP 0: LANDING */
-    .hero { text-align:center; padding:48px 0 28px; }
+    /* HERO */
+    .hero { text-align:center; padding:44px 0 24px; }
     .hero-badge { display:inline-block; font-size:11px; color:var(--pl); background:rgba(124,58,237,.1); border:1px solid rgba(167,139,250,.2); border-radius:20px; padding:4px 14px; margin-bottom:20px; letter-spacing:.3px; }
     .hero h1 { font-size:34px; font-weight:700; line-height:1.25; letter-spacing:-1px; margin-bottom:12px; }
     .hero h1 .grad { background:var(--grad); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-    .hero p { font-size:15px; color:var(--t2); max-width:450px; margin:0 auto 28px; line-height:1.75; }
+    .hero p { font-size:15px; color:var(--t2); max-width:450px; margin:0 auto 8px; line-height:1.75; }
 
-    /* Platforms */
-    .platforms-section { background:var(--bg2); border:1px solid var(--bd); border-radius:16px; padding:18px 20px; max-width:540px; margin:0 auto 22px; }
-    .platforms-label { font-size:11px; color:var(--t3); text-transform:uppercase; letter-spacing:.6px; margin-bottom:12px; }
-    .platforms-grid { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px; }
-    .pbadge { display:flex; align-items:center; gap:6px; border-radius:10px; padding:7px 12px; font-size:12px; font-weight:600; border:1px solid; }
-    .dot-sm { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
-    .pbadge.yt    { border-color:rgba(255,68,68,.3);   color:#ff6b6b; background:rgba(255,68,68,.06); }
-    .pbadge.sp    { border-color:rgba(29,185,84,.3);   color:#1db954; background:rgba(29,185,84,.06); }
-    .pbadge.am    { border-color:rgba(252,100,100,.3); color:#fc6464; background:rgba(252,100,100,.06); }
-    .pbadge.flo   { border-color:rgba(110,100,255,.3); color:#8b83ff; background:rgba(110,100,255,.06); }
-    .pbadge.melon { border-color:rgba(0,205,60,.3);    color:#00cd3c; background:rgba(0,205,60,.06); }
-    .pbadge.bugs  { border-color:rgba(255,120,0,.3);   color:#ff7800; background:rgba(255,120,0,.06); }
-    .pbadge-status { font-size:10px; font-weight:400; padding:1px 5px; border-radius:4px; background:rgba(255,255,255,.07); color:var(--t3); }
-    .pbadge-status.live { background:rgba(29,185,84,.12); color:#1db954; }
-    .platforms-note { font-size:11px; color:var(--t3); display:flex; align-items:center; gap:5px; }
-    .platforms-note::before { content:''; display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--pl); }
-
-    /* URL input */
-    .url-box { background:var(--bg3); border:1px solid var(--bd); border-radius:14px; padding:18px 20px; max-width:540px; margin:0 auto 16px; transition:border-color .2s; }
-    .url-box:focus-within { border-color:var(--pl); box-shadow:0 0 0 3px rgba(124,58,237,.1); }
-    .url-label { font-size:12px; color:var(--t2); margin-bottom:9px; display:flex; align-items:center; gap:6px; }
-    .yt-dot { display:inline-block; width:9px; height:9px; border-radius:50%; background:#ff4444; }
-    .url-row { display:flex; gap:8px; }
-    .url-input { flex:1; background:var(--bg2); border:1px solid var(--bd); border-radius:9px; padding:10px 13px; font-size:13px; color:var(--t1); font-family:inherit; outline:none; transition:border-color .2s; }
-    .url-input::placeholder { color:var(--t3); }
-    .url-input:focus { border-color:var(--pl); }
     .btn-primary { background:var(--grad); color:#fff; border:none; border-radius:9px; padding:10px 16px; font-size:13px; font-weight:500; font-family:inherit; cursor:pointer; transition:opacity .2s,transform .1s; white-space:nowrap; }
     .btn-primary:hover { opacity:.85; }
     .btn-primary:active { transform:scale(.97); }
 
-    .or-div { text-align:center; color:var(--t3); font-size:12px; max-width:540px; margin:0 auto 16px; display:flex; align-items:center; gap:10px; }
+    .or-div { text-align:center; color:var(--t3); font-size:12px; max-width:540px; margin:20px auto 16px; display:flex; align-items:center; gap:10px; }
     .or-div::before,.or-div::after { content:''; flex:1; height:1px; background:var(--bd); }
 
+    /* Spotify login / import panel */
+    .spotify-live { background:rgba(29,185,84,.06); border:1px solid rgba(29,185,84,.28); border-radius:16px; padding:18px 20px; max-width:540px; margin:0 auto 16px; }
+    .spotify-live-top { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px; }
+    .spotify-live-title { font-size:13px; font-weight:700; color:#1db954; display:flex; align-items:center; gap:8px; }
+    .spotify-live-title::before { content:''; width:9px; height:9px; border-radius:50%; background:#1db954; }
+    .spotify-live-note { font-size:11px; color:var(--t3); line-height:1.6; margin-bottom:12px; }
+    .spotify-row { display:flex; gap:8px; margin-bottom:9px; }
+    .spotify-row:last-child { margin-bottom:0; }
+    .spotify-select { flex:1; min-width:0; background:var(--bg2); border:1px solid var(--bd); border-radius:9px; padding:9px 12px; color:var(--t1); font-size:12px; font-family:inherit; outline:none; }
+    .spotify-select:focus { border-color:#1db954; }
+    .spotify-btn { background:#1db954; color:#06130a; border:none; border-radius:9px; padding:9px 12px; font-size:12px; font-weight:700; font-family:inherit; cursor:pointer; white-space:nowrap; }
+    .spotify-btn.secondary { background:transparent; color:#1db954; border:1px solid rgba(29,185,84,.45); }
+    .spotify-btn:disabled { opacity:.45; cursor:not-allowed; }
+    .spotify-status { min-height:18px; font-size:11px; color:var(--t2); line-height:1.6; }
+    .spotify-login-cta { text-align:center; padding:6px 0 2px; }
+
     /* Situation quick cards */
-    .sit-quick { max-width:540px; margin:0 auto 52px; }
+    .sit-quick { max-width:540px; margin:0 auto 24px; }
     .sit-cards { display:grid; grid-template-columns:repeat(4,1fr); gap:9px; }
     .sit-card { background:var(--bg3); border:1px solid var(--bd); border-radius:13px; padding:16px 8px; text-align:center; cursor:pointer; transition:all .18s; }
     .sit-card:hover { border-color:var(--sit-br); background:var(--bg3h); }
     .sit-card-emoji { font-size:24px; margin-bottom:7px; }
     .sit-card-label { font-size:12px; font-weight:500; }
 
-    /* STEP 1 */
-    .sec-header { padding:24px 0 16px; }
+    /* Section header */
+    .sec-header { padding:8px 0 16px; }
     .sec-title { font-size:20px; font-weight:700; margin-bottom:4px; }
     .sec-sub { font-size:13px; color:var(--t2); }
-    .url-badge { display:inline-flex; align-items:center; gap:5px; font-size:11px; color:var(--t2); background:var(--bg3); border:1px solid var(--bd); border-radius:7px; padding:3px 9px; margin-top:8px; }
+    .src-badge { display:inline-flex; align-items:center; gap:5px; font-size:11px; color:var(--t2); background:var(--bg3); border:1px solid var(--bd); border-radius:7px; padding:3px 9px; margin-top:8px; }
 
     /* Search */
     .search-wrap { position:relative; margin-bottom:14px; }
@@ -173,7 +163,7 @@
     .btn-make:active { transform:scale(.98); }
     .btn-make:disabled { opacity:.35; cursor:not-allowed; transform:none; }
 
-    /* STEP 2 */
+    /* RESULTS */
     .result-hero { text-align:center; padding:32px 0 20px; }
     .result-hero-icon { font-size:42px; margin-bottom:12px; }
     .result-hero h2 { font-size:22px; font-weight:700; margin-bottom:6px; }
@@ -229,63 +219,6 @@
 
     ::-webkit-scrollbar { width:4px; } ::-webkit-scrollbar-track { background:transparent; } ::-webkit-scrollbar-thumb { background:var(--bd); border-radius:2px; }
     @media (max-width:500px) { .hero h1{font-size:24px} .sit-cards{grid-template-columns:repeat(2,1fr)} .song-tags{display:none} .stats{grid-template-columns:repeat(2,1fr)} }
-
-    /* ── FINDER SECTION ── */
-    .finder-section { max-width:540px; margin:0 auto 16px; background:var(--bg2); border:1px solid var(--bd); border-radius:16px; overflow:hidden; }
-    .finder-tabs { display:flex; border-bottom:1px solid var(--bd); }
-    .finder-tab { flex:1; padding:12px 10px; background:none; border:none; font-size:13px; font-weight:500; color:var(--t2); cursor:pointer; transition:all .18s; font-family:inherit; display:flex; align-items:center; justify-content:center; gap:6px; }
-    .finder-tab.active { color:var(--pl); background:rgba(124,58,237,.07); }
-    .finder-tab:first-child { border-right:1px solid var(--bd); }
-    .finder-pane { display:none; padding:20px; }
-    .finder-pane.active { display:block; }
-
-    /* MIC */
-    .mic-center { display:flex; flex-direction:column; align-items:center; }
-    .mic-btn-wrap { position:relative; width:80px; height:80px; margin-bottom:14px; }
-    .mic-ripple { position:absolute; border-radius:50%; border:2px solid rgba(124,58,237,.35); opacity:0; pointer-events:none; }
-    .mic-ripple.r1 { inset:-8px; }
-    .mic-ripple.r2 { inset:-18px; }
-    .mic-ripple.r3 { inset:-28px; }
-    .mic-ripple.active { animation:micRipple 1.6s ease-out infinite; }
-    .mic-ripple.r2.active { animation-delay:.4s; }
-    .mic-ripple.r3.active { animation-delay:.8s; }
-    @keyframes micRipple { 0%{opacity:.5;transform:scale(.9)} 100%{opacity:0;transform:scale(1.15)} }
-    .mic-btn { width:80px; height:80px; border-radius:50%; background:var(--grad); border:none; cursor:pointer; font-size:30px; display:flex; align-items:center; justify-content:center; transition:transform .15s,opacity .15s; position:relative; z-index:1; }
-    .mic-btn:hover { transform:scale(1.05); opacity:.9; }
-    .mic-btn:active { transform:scale(.95); }
-    .mic-status { font-size:13px; color:var(--t1); font-weight:500; margin-bottom:4px; }
-    .mic-sub { font-size:11px; color:var(--t3); }
-    .mic-wave { display:none; align-items:flex-end; gap:3px; height:22px; margin-bottom:10px; }
-    .mic-wave.visible { display:flex; }
-    .wave-bar { width:4px; background:var(--pl); border-radius:2px; height:6px; animation:waveAnim .7s ease-in-out infinite; }
-    .wave-bar:nth-child(2) { animation-delay:.1s; }
-    .wave-bar:nth-child(3) { animation-delay:.2s; }
-    .wave-bar:nth-child(4) { animation-delay:.3s; }
-    .wave-bar:nth-child(5) { animation-delay:.15s; }
-    @keyframes waveAnim { 0%,100%{height:6px} 50%{height:20px} }
-
-    /* LYRICS */
-    .lyrics-textarea { width:100%; background:var(--bg3); border:1px solid var(--bd); border-radius:9px; padding:11px 13px; font-size:13px; color:var(--t1); font-family:inherit; outline:none; resize:none; min-height:90px; transition:border-color .2s; line-height:1.7; }
-    .lyrics-textarea::placeholder { color:var(--t3); }
-    .lyrics-textarea:focus { border-color:var(--pl); }
-    .lyrics-footer { display:flex; justify-content:space-between; align-items:center; margin-top:10px; }
-    .lyrics-hint { font-size:11px; color:var(--t3); }
-    .lyrics-matches { display:none; margin-top:14px; border-top:1px solid var(--bd); padding-top:14px; }
-    .lyrics-matches.visible { display:block; }
-    .lyrics-match-label { font-size:10px; color:var(--t3); text-transform:uppercase; letter-spacing:.6px; margin-bottom:10px; }
-    .lyrics-match-item { display:flex; align-items:center; gap:10px; padding:9px 11px; background:var(--bg3); border:1px solid var(--bd); border-radius:9px; cursor:pointer; transition:all .15s; margin-bottom:7px; }
-    .lyrics-match-item:hover { border-color:var(--bd2); }
-    .lyrics-match-avatar { width:36px; height:36px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px; flex-shrink:0; }
-    .lyrics-match-info { flex:1; min-width:0; }
-    .lyrics-match-title { font-size:13px; font-weight:500; }
-    .lyrics-match-artist { font-size:11px; color:var(--t2); }
-    .lyrics-match-btn { background:var(--grad); color:#fff; border:none; border-radius:7px; padding:6px 10px; font-size:11px; font-family:inherit; cursor:pointer; white-space:nowrap; flex-shrink:0; }
-
-    /* PLATFORM BADGES */
-    .pbadge { cursor:pointer; transition:all .18s; }
-    .pbadge:hover { opacity:.75; transform:translateY(-1px); }
-    .pbadge:active { transform:scale(.96); }
-    .pbadge-status.sim { background:rgba(124,58,237,.15); color:var(--pl); }
   </style>
 </head>
 <body>
@@ -298,77 +231,57 @@
   <div class="step-dots">
     <div class="dot active" id="dot0"></div>
     <div class="dot" id="dot1"></div>
-    <div class="dot" id="dot2"></div>
   </div>
 </header>
 
 <div class="loading-overlay" id="loadingOverlay">
   <div class="spinner"></div>
-  <div class="loading-msg" id="loadingMsg">분석 중...</div>
+  <div class="loading-msg" id="loadingMsg">불러오는 중...</div>
   <div class="loading-bar-wrap"><div class="loading-bar" id="loadingBar"></div></div>
 </div>
 
-<!-- STEP 0 -->
+<!-- STEP 0: 메인 화면 (로그인 여부와 무관하게 항상 표시) -->
 <section class="step-section active" id="step0">
   <div class="container">
     <div class="hero">
-      <div class="hero-badge">Fake Door MVP · 샘플 데이터로 시뮬레이션</div>
-      <h1>이미 듣는 곡에서<br><span class="grad">딱 맞는 플레이리스트</span>를</h1>
-      <p>좋아하는 플랫폼의 플레이리스트 링크를 넣으면, 무드·상황·장르에 맞는 곡만 골라 새 플레이리스트를 만들어 드려요.</p>
+      <div class="hero-badge">Spotify 연동</div>
+      <h1>내 음악에서<br><span class="grad">딱 맞는 플레이리스트</span>를</h1>
+      <p>Spotify로 로그인해 내 플레이리스트를 불러오거나, 상황을 바로 선택하고 무드·가수·곡으로 검색해 새 플레이리스트를 만들어 보세요.</p>
     </div>
-    <div class="platforms-section">
-      <div class="platforms-label">연동 지원 플랫폼</div>
-      <div class="platforms-grid">
-        <div class="pbadge yt"   onclick="simulatePlatformImport('youtube')"><span class="dot-sm" style="background:#ff4444"></span>YouTube     <span class="pbadge-status sim">시뮬레이션</span></div>
-        <div class="pbadge sp"   onclick="simulatePlatformImport('spotify')"><span class="dot-sm" style="background:#1db954"></span>Spotify     <span class="pbadge-status sim">시뮬레이션</span></div>
-        <div class="pbadge am"   onclick="simulatePlatformImport('apple')"  ><span class="dot-sm" style="background:#fc6464"></span>Apple Music <span class="pbadge-status sim">시뮬레이션</span></div>
-        <div class="pbadge flo"  onclick="simulatePlatformImport('flo')"   ><span class="dot-sm" style="background:#8b83ff"></span>FLO         <span class="pbadge-status sim">시뮬레이션</span></div>
-        <div class="pbadge melon"onclick="simulatePlatformImport('melon')" ><span class="dot-sm" style="background:#00cd3c"></span>Melon       <span class="pbadge-status sim">시뮬레이션</span></div>
-        <div class="pbadge bugs" onclick="simulatePlatformImport('bugs')"  ><span class="dot-sm" style="background:#ff7800"></span>Bugs        <span class="pbadge-status sim">시뮬레이션</span></div>
-      </div>
-      <div class="platforms-note">클릭하면 해당 플랫폼에서 가져오는 시뮬레이션을 체험할 수 있어요</div>
-    </div>
-    <div class="url-box">
-      <div class="url-label"><span class="yt-dot"></span>YouTube 플레이리스트 링크 입력</div>
-      <div class="url-row">
-        <input class="url-input" id="urlInput" type="text" placeholder="https://www.youtube.com/playlist?list=..." />
-        <button class="btn-primary" onclick="handleUrl()">불러오기</button>
-      </div>
-    </div>
-    <div class="or-div">또는 음악으로 찾기</div>
-    <div class="finder-section">
-      <div class="finder-tabs">
-        <button class="finder-tab active" onclick="switchFinder('mic')" id="tabMic">🎤 음악 듣고 찾기</button>
-        <button class="finder-tab" onclick="switchFinder('lyrics')" id="tabLyrics">📝 가사로 찾기</button>
-      </div>
-      <div class="finder-pane active" id="paneMic">
-        <div class="mic-center">
-          <div class="mic-btn-wrap">
-            <div class="mic-ripple r1"></div>
-            <div class="mic-ripple r2"></div>
-            <div class="mic-ripple r3"></div>
-            <button class="mic-btn" id="micBtn" onclick="toggleMic()">🎤</button>
-          </div>
-          <div class="mic-wave" id="micWave">
-            <div class="wave-bar"></div>
-            <div class="wave-bar"></div>
-            <div class="wave-bar"></div>
-            <div class="wave-bar"></div>
-            <div class="wave-bar"></div>
-          </div>
-          <div class="mic-status" id="micStatus">마이크를 눌러 음악 인식</div>
-          <div class="mic-sub" id="micSub">주변에서 재생 중인 음악을 찾아드려요</div>
+
+    <div class="spotify-live">
+      <!-- 로그인 전 -->
+      <div id="spotifyLoggedOut">
+        <div class="spotify-live-top">
+          <div class="spotify-live-title">Spotify 로그인</div>
         </div>
-      </div>
-      <div class="finder-pane" id="paneLyrics">
-        <textarea class="lyrics-textarea" id="lyricsInput" placeholder="기억나는 가사를 입력하세요&#10;예: 이 밤 그날의 반딧불을&#10;예: 나 좋은 날 있잖아 하늘도 참 파랗다" oninput="handleLyricsInput(this.value)"></textarea>
-        <div class="lyrics-footer">
-          <span class="lyrics-hint">가사를 입력하면 자동 검색</span>
-          <button class="btn-primary" onclick="searchByLyrics()" style="padding:8px 14px;font-size:12px;">검색</button>
+        <div class="spotify-live-note">로그인하면 내 플레이리스트를 불러와 관련 추천곡과 섞어 새 목록을 만들 수 있어요.</div>
+        <div class="spotify-login-cta">
+          <button class="btn-primary" onclick="spotifyLogin()">Spotify로 로그인</button>
         </div>
-        <div class="lyrics-matches" id="lyricsMatches"></div>
+        <div class="spotify-status" id="spotifyStatus" style="margin-top:10px;text-align:center;">아직 Spotify에 연결되지 않았습니다.</div>
+      </div>
+      <!-- 로그인 후 -->
+      <div id="spotifyLoggedIn" style="display:none;">
+        <div class="spotify-live-top">
+          <div class="spotify-live-title">내 플레이리스트 불러오기</div>
+          <button class="spotify-btn secondary" onclick="spotifyLogout()">로그아웃</button>
+        </div>
+        <div class="spotify-live-note">가져온 곡 70%에 관련 아티스트 추천곡 30%를 섞어 새 목록을 구성합니다.</div>
+        <div class="spotify-row">
+          <select class="spotify-select" id="spotifyPlaylistSelect">
+            <option value="">Spotify 플레이리스트를 불러오는 중...</option>
+          </select>
+          <button class="spotify-btn secondary" onclick="loadSpotifyPlaylists()">새로고침</button>
+        </div>
+        <div class="spotify-row">
+          <button class="spotify-btn" onclick="importSelectedSpotifyPlaylist()">선택한 목록으로 7:3 만들기</button>
+          <button class="spotify-btn secondary" onclick="createSpotifyPlaylistFromCurrent()">현재 결과를 Spotify에 저장</button>
+        </div>
+        <div class="spotify-status" id="spotifyStatusLoggedIn"></div>
       </div>
     </div>
+
     <div class="or-div">또는 상황을 바로 선택</div>
     <div class="sit-quick">
       <div class="sit-cards">
@@ -382,20 +295,15 @@
         <div class="sit-card" onclick="handleSit('비오는날')">   <div class="sit-card-emoji">🌧</div><div class="sit-card-label">비오는날</div></div>
       </div>
     </div>
-  </div>
-</section>
 
-<!-- STEP 1 -->
-<section class="step-section" id="step1">
-  <div class="container">
     <div class="sec-header">
-      <div class="sec-title" id="s1Title">플레이리스트를 불러왔어요!</div>
+      <div class="sec-title" id="s1Title">무드에 맞는 곡을 찾아보세요</div>
       <div class="sec-sub">조건을 고르면 알고리즘이 관련 곡을 자동으로 추론합니다</div>
-      <div class="url-badge"><span class="yt-dot" id="badgeDot" style="width:7px;height:7px;"></span><span id="badgeText">샘플 데이터</span></div>
+      <div class="src-badge"><span id="badgeDot" style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--bd2);"></span><span id="badgeText">곡 데이터 없음</span></div>
     </div>
     <div class="search-wrap">
       <span class="search-icon">&#9906;</span>
-      <input class="search-input" id="searchInput" type="text" placeholder="곡 제목 또는 아티스트 검색..." oninput="handleSearch(this.value)" />
+      <input class="search-input" id="searchInput" type="text" placeholder="곡 제목, 아티스트, 무드로 검색..." oninput="handleSearch(this.value)" />
       <button class="search-clear" id="searchClear" onclick="clearSearch()">지우기</button>
     </div>
     <div class="filter-panel">
@@ -407,18 +315,18 @@
     </div>
     <div class="infer-box" id="inferBox"></div>
     <div class="count-bar">
-      <div class="count-text"><strong id="filtCount">30</strong>곡<span class="rank-note" id="rankNote"></span></div>
+      <div class="count-text"><strong id="filtCount">0</strong>곡<span class="rank-note" id="rankNote"></span></div>
       <button class="clear-btn" onclick="clearAll()">필터 초기화</button>
     </div>
     <div class="song-list" id="songList"></div>
     <div class="make-wrap">
-      <button class="btn-make" id="makeBtn" onclick="goResults()">30곡으로 플레이리스트 만들기 →</button>
+      <button class="btn-make" id="makeBtn" onclick="goResults()">플레이리스트 만들기 →</button>
     </div>
   </div>
 </section>
 
-<!-- STEP 2 -->
-<section class="step-section" id="step2">
+<!-- STEP 1: 결과 -->
+<section class="step-section" id="step1">
   <div class="container">
     <div class="result-hero">
       <div class="result-hero-icon">🎶</div>
@@ -429,7 +337,7 @@
     <div id="resultList"></div>
     <div class="action-bar">
       <button class="btn-sec" onclick="goBack()">← 조건 다시 선택</button>
-      <button class="btn-sec" onclick="resetAll()">처음부터</button>
+      <button class="btn-sec" onclick="resetAll()">필터 초기화</button>
     </div>
   </div>
 </section>
@@ -439,62 +347,6 @@
 </div>
 
 <script>
-// ═══════════════════════════════════════════════════════════
-//  LYRICS DATABASE
-// ═══════════════════════════════════════════════════════════
-const LYRICS = {
-  1:  "shining through the city with a little funk and soul light it up like dynamite ima light it up like dynamite",
-  2:  "이 밤 그날의 반딧불을 당신의 창 가까이 보내요 사랑한다는 말이에요 내가 쓴 긴 편지 마지막엔",
-  3:  "다 보여요 알아요 다 보여요 나도요 모른 척하지 말아요 내가 너무 잘 알아요",
-  4:  "any song 틀어줘 신나는 노래면 다 돼 네가 원하면 내가 춰줄게 기분이 좋아지게",
-  5:  "비 오는 날엔 항상 생각나 이상하게 비가 오면 생각나 우산도 없이 걷던 날",
-  6:  "자나깨나 네 생각뿐이야 자나깨나 너를 보고 싶어 달콤한 꿈에서 깨어나도",
-  7:  "저 별이 나에게 속삭여 사랑하기 좋은 밤이라고 이 밤이 지나면",
-  8:  "나 혼자 떠나는 여행 설레는 마음에 새로운 시작을 향해 떠나가",
-  9:  "i got the power 달려 go up i got the power 어둠을 뚫고 우리가 함께라면",
-  10: "look at you now look at me how you like that 어둠 속에 갇힌 나를 봐",
-  11: "나 좋은 날 있잖아 오늘 같은 날 하늘도 참 파랗다 나는 정말 행복해 기분이",
-  12: "여기는 내 놀이터 놀이 내가 원하는 대로 아무도 방해 못 해 내 세상",
-  13: "hip hip hip 당당한 나 맘마무 두려울 게 없어 이게 바로 나야",
-  14: "파란 하늘 아래 자유롭게 날아가고 싶어 이 기분 어때 청량한 여름",
-  15: "give love 사랑을 줘 나에게 사랑을 줘 따뜻한 사랑을 나눠요",
-  16: "우린 완전 달라 baby 완전 달라 dna부터가 태초의 dna 우리가 만난 건",
-  17: "11시 11분에 그대 생각해 별똥별에 소원을 빌어 보고 싶어 그리워",
-  18: "나는야 들에 핀 야생화 강한 비바람에도 꺾이지 않아 다시 일어서 피어나",
-  19: "i love the view 환상적인 뷰 세상이 아름다워 너와 함께라면 모든 게",
-  20: "뱅뱅뱅 나는 쏜다 뱅뱅뱅 총을 쏴 빵 빵 빵야 빵야 빵야",
-  21: "넌 사이코 나는 사이코 우린 둘 다 사이코 아름다운 사이코 끌리는 걸",
-  22: "정말로 정말로 너를 사랑해 정말로 정말로 really really 보고파",
-  23: "사랑을 했다 우리가 행복했다 정말로 이 순간이 영원하길 너와 나 함께",
-  24: "사랑 앞에 주저하는 그대 용기 내어 손을 잡아요 설레는 이 마음",
-  25: "그대여 그대여 벚꽃이 피는 봄에 나를 기억해줘 벚꽃 엔딩 봄날에",
-  26: "아 아메리카노 한 잔의 여유 내 사랑을 담아 아침의 커피 한 모금",
-  27: "봄이 봄이 봄이 왔네 봄봄봄 봄이 왔어 봄이 왔어 새봄이 왔네",
-  28: "나는 주인공 내 인생의 주인공 두려움 없이 나아가 강해진 나 주인공",
-  29: "숨을 크게 쉬어요 당신 곁에 있을게요 한숨 쉬어도 괜찮아 위로해줄게 괜찮아",
-  30: "색칠해봐요 크레용으로 내 마음대로 색깔이 없어도 괜찮아 크레용",
-  31: "그래 난 셀럽 네 눈에 비친 나 완벽하지 않아도 빛이 나 가장 밝게 빛나는 나야",
-  32: "smooth like butter like a criminal undercover gonna pop like trouble breaking into your heart like that cool shade stunner",
-  33: "fancy you fancy you 내 눈을 봐 빠져들어 i'm so fancy you already know",
-  34: "next level 아무나 올 수 없어 내가 선택한 길 ae aespa 강해져",
-  35: "attention baby now don't you look away 날 봐줘 봐줘 give me your attention baby",
-  36: "hype boy 나를 설레게 해 너는 내 hype boy 나를 흔들어 설레어",
-  37: "i'm antifragile antifragile stronger 강해져 두려울 게 없어 antifragile",
-  38: "사랑이 잘 안 된다 너와 나 사이 서툴러도 괜찮아 사랑이 잘",
-  39: "어떻게 이별까지 사랑하겠어 널 사랑하는 게 마지막이야 보고 싶다 그리워",
-  40: "i got a feeling dive into love 빠져들게 돼 love dive love dive",
-  41: "after like 이 기분 어때 i feel love 느껴봐 다시 한번 after like",
-  42: "라일락 향기처럼 봄바람 따라 자유롭게 날아가 lilac 라일락",
-  43: "사랑은 늘 도망가 잡을 수 없어 그리워 그리워 사랑은 늘",
-  44: "좋아 좋아 너무 좋아 네가 너무 좋아 말하지 못해도 좋아좋아",
-  45: "밤이 되니까 생각이 나 너의 목소리가 밤이 되니까",
-  46: "polaroid love 순간을 담아 우리만의 사진 영원히 간직해 polaroid",
-  47: "내 손을 잡아 놓지 마 함께 걸어가 내 손을 잡아",
-  48: "stay with me 곁에 있어줘 날 떠나지 마 stay",
-  49: "거리에서 너를 만나 반가워 잘 지냈어 거리에서",
-  50: "on and on and on 계속 돌아가 너의 주위를 on and on",
-};
-
 // ═══════════════════════════════════════════════════════════
 //  ALGORITHM TABLES
 // ═══════════════════════════════════════════════════════════
@@ -524,259 +376,9 @@ const MOOD_GENRE = {
 };
 
 // ═══════════════════════════════════════════════════════════
-//  SONGS  (30곡)
+//  SONGS — Spotify에서 실제로 불러온 곡만 채워집니다
 // ═══════════════════════════════════════════════════════════
-const SONGS = [
-  { id:1,  title:"Dynamite",           artist:"BTS",                aKey:"BTS",          year:2020, color:"#8b5cf6",
-    mood:["신나는","에너제틱"],    situation:["파티","운동","아침"],           genre:["팝","댄스"],
-    bpm:114, energy:"높음", vibe:"밝고 경쾌함",
-    ai:"BPM 114의 밝고 경쾌한 디스코 팝. 영어 가사 기반 업템포 트랙으로, 파티와 운동 모두에 어울리는 긍정적인 에너지가 특징입니다." },
-
-  { id:2,  title:"밤편지",             artist:"아이유 (IU)",         aKey:"아이유",        year:2017, color:"#0ea5e9",
-    mood:["감성적인","따뜻한"],    situation:["퇴근길","혼자있을때","새벽"],    genre:["인디","발라드"],
-    bpm:68, energy:"낮음", vibe:"감성적이고 따뜻함",
-    ai:"잔잔한 어쿠스틱 기타와 피아노 중심 발라드. 편지 형식의 가사가 그리움과 따뜻함을 전달하며, 조용한 밤이나 새벽에 잘 어울립니다." },
-
-  { id:3,  title:"Instagram",          artist:"DEAN",               aKey:"DEAN",         year:2016, color:"#6366f1",
-    mood:["몽환적인","감성적인"],  situation:["퇴근길","드라이브","새벽"],      genre:["R&B"],
-    bpm:78, energy:"중간", vibe:"몽환적이고 감각적",
-    ai:"다크하고 몽환적인 R&B 사운드. 소셜미디어 시대의 고독을 감각적으로 표현하며, 밤 드라이브나 새벽 분위기에 탁월합니다." },
-
-  { id:4,  title:"Any Song",           artist:"Zico",               aKey:"Zico",         year:2020, color:"#f59e0b",
-    mood:["신나는","에너제틱"],    situation:["파티","운동","드라이브"],        genre:["힙합","댄스"],
-    bpm:121, energy:"높음", vibe:"신나고 중독적",
-    ai:"클럽 비트 위 중독성 있는 훅이 반복되는 파티 트랙. 장르·분위기 불문 어디서나 분위기를 올리는 데 탁월합니다." },
-
-  { id:5,  title:"연애소설",           artist:"Epik High ft. 선우정아", aKey:"Epik High", year:2017, color:"#64748b",
-    mood:["감성적인","설레는"],    situation:["비오는날","퇴근길","혼자있을때"], genre:["힙합","인디"],
-    bpm:85, energy:"낮음", vibe:"서정적이고 감성적",
-    ai:"비 오는 날 분위기에 최적화된 감성 힙합. 선우정아 보컬과 타블로의 서정적 가사가 어우러져 깊은 감정적 공명을 만듭니다." },
-
-  { id:6,  title:"자나깨나",           artist:"Crush",              aKey:"Crush",        year:2014, color:"#ec4899",
-    mood:["설레는","따뜻한"],      situation:["데이트","드라이브","카페"],      genre:["R&B","소울"],
-    bpm:92, energy:"중간", vibe:"달콤하고 설레임",
-    ai:"부드럽고 따뜻한 R&B 소울. 사랑에 빠진 설레임을 담담하게 표현하며, 데이트나 드라이브 BGM으로 완벽합니다." },
-
-  { id:7,  title:"저 별",             artist:"Heize",              aKey:"Heize",        year:2016, color:"#475569",
-    mood:["감성적인","몽환적인"],  situation:["혼자있을때","비오는날","새벽"],  genre:["인디","R&B"],
-    bpm:72, energy:"낮음", vibe:"쓸쓸하고 몽환적",
-    ai:"나지막한 보컬과 미니멀한 비트의 조합. 밤의 쓸쓸함과 그리움을 섬세하게 표현해내는 감성 트랙입니다." },
-
-  { id:8,  title:"여행",              artist:"볼빨간사춘기",        aKey:"볼빨간사춘기",  year:2016, color:"#f97316",
-    mood:["설레는","따뜻한"],      situation:["드라이브","데이트","여행"],      genre:["인디","팝"],
-    bpm:105, energy:"중간", vibe:"설레고 경쾌함",
-    ai:"경쾌하고 따뜻한 인디팝. 새로운 시작의 설레임을 담은 가사가 봄날 드라이브나 여행 출발 전 분위기와 잘 어울립니다." },
-
-  { id:9,  title:"Power",             artist:"EXO",                aKey:"EXO",          year:2017, color:"#10b981",
-    mood:["신나는","에너제틱"],    situation:["운동","파티","아침"],           genre:["팝","댄스"],
-    bpm:130, energy:"높음", vibe:"강렬하고 파워풀",
-    ai:"강렬한 신스 비트와 중독성 높은 훅. 에너지 넘치는 K-pop 댄스 팝으로 운동 중 동기부여에 탁월합니다." },
-
-  { id:10, title:"How You Like That", artist:"BLACKPINK",          aKey:"BLACKPINK",    year:2020, color:"#ef4444",
-    mood:["강렬한","에너제틱"],    situation:["운동","파티"],                  genre:["댄스","팝"],
-    bpm:128, energy:"높음", vibe:"강렬하고 카리스마틱",
-    ai:"강렬한 드롭과 EDM 요소가 결합된 K-pop. 파워풀한 보컬과 카리스마 넘치는 에너지가 어디서든 주목을 끕니다." },
-
-  { id:11, title:"좋은 날",           artist:"아이유 (IU)",         aKey:"아이유",        year:2010, color:"#06b6d4",
-    mood:["설레는","신나는"],      situation:["드라이브","카페","아침","여행"], genre:["팝","인디"],
-    bpm:120, energy:"중간", vibe:"밝고 청량함",
-    ai:"밝고 경쾌한 팝 사운드에 3단 고음이 인상적인 곡. 맑은 에너지가 아침이나 드라이브 분위기를 한층 올려줍니다." },
-
-  { id:12, title:"놀이",              artist:"기리보이",            aKey:"기리보이",      year:2018, color:"#7c3aed",
-    mood:["여유로운","몽환적인"],  situation:["카페","공부/집중","새벽"],       genre:["힙합","R&B"],
-    bpm:88, energy:"낮음", vibe:"여유롭고 느긋함",
-    ai:"lo-fi에 가까운 여유로운 힙합 비트. 일상의 느긋한 여유를 담아내 카페나 공부 중 배경음악으로 제격입니다." },
-
-  { id:13, title:"HIP",               artist:"MAMAMOO",            aKey:"MAMAMOO",      year:2019, color:"#d946ef",
-    mood:["강렬한","신나는"],      situation:["파티","운동"],                  genre:["댄스","팝"],
-    bpm:125, energy:"높음", vibe:"당당하고 강렬함",
-    ai:"자신감 넘치는 가사와 강렬한 퍼포먼스가 결합된 곡. 당당한 에너지가 운동이나 파티 분위기에 잘 맞습니다." },
-
-  { id:14, title:"파란하늘",          artist:"Beenzino",           aKey:"Beenzino",     year:2013, color:"#0284c7",
-    mood:["여유로운","설레는"],    situation:["드라이브","카페","여행"],        genre:["힙합"],
-    bpm:95, energy:"중간", vibe:"경쾌하고 자유로움",
-    ai:"맑은 날 어울리는 경쾌한 힙합 트랙. 젊은 날의 설레임과 자유를 담아 청량한 드라이브나 여행 분위기를 완성합니다." },
-
-  { id:15, title:"Give Love",         artist:"악동뮤지션 (AKMU)",   aKey:"AKMU",         year:2014, color:"#16a34a",
-    mood:["따뜻한","설레는"],      situation:["카페","공부/집중","아침"],       genre:["인디","팝"],
-    bpm:88, energy:"낮음", vibe:"따뜻하고 사랑스러움",
-    ai:"어쿠스틱 기반의 따뜻하고 사랑스러운 곡. 포근한 보컬과 가사가 카페나 집에서 듣기에 완벽한 분위기를 만듭니다." },
-
-  { id:16, title:"DNA",               artist:"BTS",                aKey:"BTS",          year:2017, color:"#8b5cf6",
-    mood:["신나는","에너제틱"],    situation:["파티","운동","아침"],           genre:["팝","댄스"],
-    bpm:126, energy:"높음", vibe:"경쾌하고 화려함",
-    ai:"강렬한 브라스 샘플과 밝은 비트가 조화로운 팝 댄스 트랙. BTS 대표곡으로 전 연령대에서 사랑받는 활기찬 에너지입니다." },
-
-  { id:17, title:"11:11",             artist:"태연 (TAEYEON)",      aKey:"태연",          year:2017, color:"#818cf8",
-    mood:["감성적인","몽환적인"],  situation:["혼자있을때","새벽","퇴근길"],    genre:["발라드","인디"],
-    bpm:62, energy:"낮음", vibe:"몽환적이고 감성적",
-    ai:"11시 11분이라는 소원의 시간을 모티브로 한 감성 발라드. 섬세한 보컬과 몽환적인 프로덕션이 늦은 밤 분위기를 완성합니다." },
-
-  { id:18, title:"야생화",            artist:"박효신",              aKey:"박효신",        year:2011, color:"#6ee7b7",
-    mood:["따뜻한","감성적인"],    situation:["혼자있을때","퇴근길","비오는날"], genre:["발라드"],
-    bpm:65, energy:"낮음", vibe:"따뜻하고 서정적",
-    ai:"섬세하고 힘있는 보컬로 삶의 의지와 따뜻함을 담아낸 발라드 명곡. 혼자만의 시간에 깊은 위로를 건넵니다." },
-
-  { id:19, title:"View",              artist:"샤이니 (SHINee)",     aKey:"샤이니",        year:2015, color:"#38bdf8",
-    mood:["설레는","몽환적인"],    situation:["드라이브","데이트","새벽"],      genre:["팝","R&B"],
-    bpm:118, energy:"중간", vibe:"세련되고 몽환적",
-    ai:"인디 팝 감성과 R&B 리듬이 결합된 세련된 트랙. 도시적인 분위기와 청량한 설레임이 드라이브 BGM으로 완벽합니다." },
-
-  { id:20, title:"뱅뱅뱅",            artist:"BIGBANG",            aKey:"BIGBANG",      year:2015, color:"#fbbf24",
-    mood:["신나는","강렬한"],      situation:["파티","운동"],                  genre:["댄스","팝"],
-    bpm:140, energy:"높음", vibe:"폭발적이고 강렬함",
-    ai:"BIGBANG 특유의 카리스마와 폭발적인 에너지가 응축된 EDM 기반 댄스 팝. 어떤 파티에서도 분위기를 장악합니다." },
-
-  { id:21, title:"Psycho",            artist:"Red Velvet",         aKey:"Red Velvet",   year:2019, color:"#f43f5e",
-    mood:["몽환적인","설레는"],    situation:["드라이브","카페","새벽"],        genre:["팝","R&B"],
-    bpm:120, energy:"중간", vibe:"세련되고 중독적",
-    ai:"다크하면서도 세련된 팝 R&B. 리드미컬한 훅과 독특한 멜로디 진행이 중독성을 만들어내는 레드벨벳의 대표작입니다." },
-
-  { id:22, title:"REALLY REALLY",    artist:"WINNER",             aKey:"WINNER",       year:2017, color:"#a78bfa",
-    mood:["설레는","따뜻한"],      situation:["데이트","카페","드라이브"],      genre:["R&B","팝"],
-    bpm:110, energy:"중간", vibe:"달콤하고 설레임",
-    ai:"가벼운 리듬감과 달콤한 가사가 조화로운 K-R&B 트랙. 설레는 감정을 담담하게 표현해 데이트나 카페에서 듣기 좋습니다." },
-
-  { id:23, title:"사랑을 했다",       artist:"iKON",               aKey:"iKON",         year:2018, color:"#94a3b8",
-    mood:["감성적인","따뜻한"],    situation:["퇴근길","혼자있을때"],           genre:["팝","발라드"],
-    bpm:90, energy:"낮음", vibe:"감성적이고 그리움",
-    ai:"이별의 아픔과 그리움을 담담하게 표현한 감성 팝. 친근한 멜로디와 진솔한 가사가 많은 이들의 공감을 이끌어냅니다." },
-
-  { id:24, title:"주저하는 연인들을 위해", artist:"잔나비",         aKey:"잔나비",        year:2018, color:"#fb923c",
-    mood:["설레는","따뜻한"],      situation:["데이트","드라이브","여행"],      genre:["인디","팝"],
-    bpm:100, energy:"중간", vibe:"따뜻하고 레트로",
-    ai:"70-80년대 레트로 팝 감성을 현대적으로 재해석한 인디 팝. 사랑의 설레임을 아름답고 서정적으로 담아냅니다." },
-
-  { id:25, title:"벚꽃 엔딩",         artist:"장범준",              aKey:"장범준",        year:2012, color:"#fb7185",
-    mood:["설레는","따뜻한"],      situation:["드라이브","여행","아침"],        genre:["인디","팝"],
-    bpm:112, energy:"중간", vibe:"청량하고 설레임",
-    ai:"봄날의 설레임을 담은 정석 같은 곡. 경쾌한 기타 리프와 따뜻한 가사가 여행이나 드라이브 분위기를 완성합니다." },
-
-  { id:26, title:"아메리카노",         artist:"10cm",               aKey:"10cm",         year:2010, color:"#92400e",
-    mood:["여유로운","따뜻한"],    situation:["카페","공부/집중","아침"],       genre:["인디"],
-    bpm:82, energy:"낮음", vibe:"여유롭고 위트있음",
-    ai:"아침 커피 한 잔의 여유를 담은 어쿠스틱 인디 팝. 위트 있는 가사와 편안한 멜로디가 카페 분위기에 딱 맞습니다." },
-
-  { id:27, title:"봄봄봄",            artist:"로이킴",              aKey:"로이킴",        year:2013, color:"#4ade80",
-    mood:["설레는","따뜻한"],      situation:["드라이브","아침","여행"],        genre:["인디","팝"],
-    bpm:115, energy:"중간", vibe:"상큼하고 따뜻함",
-    ai:"봄의 설레임과 새로운 시작을 담은 상큼한 인디 팝. 어쿠스틱 기타와 밝은 멜로디가 맑은 아침이나 드라이브에 잘 어울립니다." },
-
-  { id:28, title:"주인공",            artist:"선미",                aKey:"선미",          year:2017, color:"#e879f9",
-    mood:["강렬한","신나는"],      situation:["파티","운동"],                  genre:["댄스","팝"],
-    bpm:126, energy:"높음", vibe:"강렬하고 카리스마틱",
-    ai:"자기 자신이 인생의 주인공이라는 메시지를 담은 카리스마 넘치는 댄스 팝. 강한 리듬과 개성 있는 보컬이 에너지를 끌어올립니다." },
-
-  { id:29, title:"한숨",              artist:"이하이",              aKey:"이하이",        year:2016, color:"#60a5fa",
-    mood:["감성적인","따뜻한"],    situation:["혼자있을때","퇴근길","새벽"],    genre:["발라드","R&B"],
-    bpm:58, energy:"낮음", vibe:"따뜻하고 위로가 됨",
-    ai:"지친 하루의 끝, 깊은 한숨 속에 담긴 위로를 전하는 발라드. 이하이의 넓은 음역과 감성적인 표현이 깊은 공감을 이끌어냅니다." },
-
-  { id:30, title:"크레용 (Crayon)",   artist:"G-DRAGON",           aKey:"G-DRAGON",     year:2012, color:"#facc15",
-    mood:["신나는","강렬한"],      situation:["파티","운동"],                  genre:["힙합","댄스"],
-    bpm:133, energy:"높음", vibe:"개성있고 강렬함",
-    ai:"지드래곤 특유의 개성과 에너지가 폭발하는 힙합 댄스 트랙. 파격적인 스타일과 중독성 있는 비트로 파티 플레이리스트의 필수 곡입니다." },
-
-  { id:31, title:"Celebrity",           artist:"아이유 (IU)",          aKey:"아이유",        year:2021, color:"#f472b6",
-    mood:["설레는","따뜻한"],      situation:["아침","드라이브","카페"],       genre:["팝","인디"],
-    bpm:109, energy:"중간", vibe:"따뜻하고 화사함",
-    ai:"경쾌한 브라스와 따뜻한 보컬이 어우러진 팝 트랙. 있는 그대로의 나를 사랑하자는 메시지가 밝고 화사한 에너지와 함께 전달됩니다." },
-
-  { id:32, title:"Butter",              artist:"BTS",                 aKey:"BTS",          year:2021, color:"#fbbf24",
-    mood:["신나는","에너제틱"],     situation:["파티","운동","아침"],           genre:["팝","댄스"],
-    bpm:110, energy:"높음", vibe:"경쾌하고 달콤함",
-    ai:"디스코팝과 팝의 결합으로 완성된 BTS 여름 앤썸. 부드럽고 달콤한 라임과 중독성 있는 훅이 파티와 운동 모두에 최적화되어 있습니다." },
-
-  { id:33, title:"Fancy",               artist:"TWICE",               aKey:"TWICE",        year:2019, color:"#fb7185",
-    mood:["설레는","신나는"],       situation:["드라이브","파티","아침"],       genre:["팝","댄스"],
-    bpm:109, energy:"높음", vibe:"발랄하고 화사함",
-    ai:"80년대 신스팝 감성을 세련되게 재해석한 TWICE의 전환점 트랙. 화사하고 발랄한 에너지가 드라이브나 아침 루틴을 활기차게 만들어줍니다." },
-
-  { id:34, title:"Next Level",          artist:"aespa",               aKey:"aespa",        year:2021, color:"#818cf8",
-    mood:["강렬한","에너제틱"],     situation:["운동","파티"],                  genre:["댄스","팝"],
-    bpm:131, energy:"높음", vibe:"강렬하고 미래적",
-    ai:"사이버펑크 감성의 강렬한 K-pop 댄스 팝. 독특한 장르 믹스와 임팩트 있는 비트가 운동 중 퍼포먼스를 극대화합니다." },
-
-  { id:35, title:"Attention",           artist:"NewJeans",            aKey:"NewJeans",     year:2022, color:"#0ea5e9",
-    mood:["설레는","여유로운"],     situation:["카페","드라이브","데이트"],      genre:["R&B","팝"],
-    bpm:112, energy:"중간", vibe:"청량하고 설레임",
-    ai:"뉴진스 데뷔를 알린 청량한 R&B 팝. 단순하지만 중독성 있는 멜로디와 자연스러운 보컬이 카페나 데이트 분위기를 완성합니다." },
-
-  { id:36, title:"Hype Boy",            artist:"NewJeans",            aKey:"NewJeans",     year:2022, color:"#38bdf8",
-    mood:["설레는","신나는"],       situation:["드라이브","아침","데이트"],      genre:["팝","R&B"],
-    bpm:124, energy:"높음", vibe:"경쾌하고 사랑스러움",
-    ai:"설레는 감정을 경쾌하게 표현한 뉴진스 특유의 Y2K 팝 트랙. 가벼운 비트와 사랑스러운 보컬이 아침 기분을 한껏 올려줍니다." },
-
-  { id:37, title:"ANTIFRAGILE",         artist:"LE SSERAFIM",         aKey:"LE SSERAFIM",  year:2022, color:"#e879f9",
-    mood:["강렬한","에너제틱"],     situation:["운동","파티"],                  genre:["댄스","팝"],
-    bpm:130, energy:"높음", vibe:"강하고 당당함",
-    ai:"역경을 성장의 발판으로 삼는 메시지를 강렬한 댄스 팝으로 표현. 강인하고 당당한 에너지가 운동 동기부여에 탁월합니다." },
-
-  { id:38, title:"사랑이 잘",           artist:"아이유 ft. Oh Hyuk",   aKey:"아이유",        year:2020, color:"#c084fc",
-    mood:["감성적인","따뜻한"],     situation:["퇴근길","혼자있을때","드라이브"], genre:["인디","팝"],
-    bpm:80, energy:"낮음", vibe:"감성적이고 아련함",
-    ai:"아이유와 혁오 오혁의 만남으로 완성된 감성 인디 팝. 서툰 사랑의 감정을 담담하게 풀어내 퇴근길이나 드라이브의 감성을 자극합니다." },
-
-  { id:39, title:"어떻게 이별까지 사랑하겠어", artist:"폴킴",           aKey:"폴킴",          year:2018, color:"#94a3b8",
-    mood:["감성적인","따뜻한"],     situation:["혼자있을때","퇴근길","새벽"],    genre:["발라드","팝"],
-    bpm:72, energy:"낮음", vibe:"서정적이고 애잔함",
-    ai:"이별의 아픔을 담백하게 노래한 폴킴의 대표 발라드. 과장 없는 진솔한 목소리가 깊은 공감과 위로를 전달하며, 늦은 밤 혼자 듣기에 완벽합니다." },
-
-  { id:40, title:"Love Dive",           artist:"IVE",                 aKey:"IVE",          year:2022, color:"#8b5cf6",
-    mood:["설레는","신나는"],       situation:["드라이브","파티","아침"],        genre:["댄스","팝"],
-    bpm:130, energy:"높음", vibe:"세련되고 몽환적",
-    ai:"자아도취와 사랑의 설레임을 세련되게 표현한 아이브 대표곡. 강렬한 드롭과 중독성 있는 훅이 파티나 드라이브에서 분위기를 장악합니다." },
-
-  { id:41, title:"After LIKE",          artist:"IVE",                 aKey:"IVE",          year:2022, color:"#a78bfa",
-    mood:["신나는","에너제틱"],     situation:["파티","운동","드라이브"],        genre:["댄스","팝"],
-    bpm:124, energy:"높음", vibe:"경쾌하고 세련됨",
-    ai:"Gloria Gaynor의 I Will Survive를 샘플링한 세련된 댄스 팝. 빈티지 디스코 감성과 현대 K-pop이 만나 운동이나 파티에서 흥을 돋웁니다." },
-
-  { id:42, title:"Lilac",               artist:"아이유 (IU)",          aKey:"아이유",        year:2021, color:"#c4b5fd",
-    mood:["설레는","여유로운"],     situation:["드라이브","카페","여행"],        genre:["인디","팝"],
-    bpm:110, energy:"중간", vibe:"청량하고 자유로움",
-    ai:"봄날의 청량한 설레임과 이별의 아련함을 동시에 담은 아이유 앨범 타이틀. 경쾌하지만 서정적인 멜로디가 드라이브나 봄 여행에 완벽합니다." },
-
-  { id:43, title:"사랑은 늘 도망가",    artist:"임영웅",               aKey:"임영웅",        year:2022, color:"#60a5fa",
-    mood:["감성적인","따뜻한"],     situation:["혼자있을때","퇴근길"],           genre:["발라드","팝"],
-    bpm:68, energy:"낮음", vibe:"따뜻하고 그리움",
-    ai:"사랑의 아픔과 그리움을 임영웅 특유의 풍부한 보컬로 담아낸 발라드. 진심 어린 감정 표현이 많은 이들의 마음을 위로합니다." },
-
-  { id:44, title:"좋아좋아",            artist:"10cm",                aKey:"10cm",         year:2013, color:"#a16207",
-    mood:["설레는","따뜻한"],       situation:["데이트","카페","드라이브"],       genre:["인디","팝"],
-    bpm:95, energy:"중간", vibe:"달콤하고 따뜻함",
-    ai:"좋아하는 감정을 솔직하고 달콤하게 표현한 10cm의 사랑받는 곡. 어쿠스틱한 편안함과 설레는 가사가 데이트 분위기를 완성합니다." },
-
-  { id:45, title:"밤이 되니까",         artist:"검정치마",             aKey:"검정치마",      year:2019, color:"#475569",
-    mood:["감성적인","여유로운"],    situation:["새벽","혼자있을때","퇴근길"],    genre:["인디","R&B"],
-    bpm:76, energy:"낮음", vibe:"몽환적이고 여유로움",
-    ai:"밤의 고요함 속에서 피어나는 감정을 감각적으로 담은 검정치마의 인디 R&B. 독특한 음색과 몽환적인 분위기가 새벽을 특별하게 만들어줍니다." },
-
-  { id:46, title:"Polaroid Love",       artist:"ENHYPEN",             aKey:"ENHYPEN",      year:2021, color:"#7dd3fc",
-    mood:["설레는","감성적인"],     situation:["데이트","카페","새벽"],           genre:["팝","인디"],
-    bpm:80, energy:"낮음", vibe:"청량하고 감성적",
-    ai:"순간의 아름다움을 폴라로이드 사진처럼 담아내는 감성 팝. 맑고 청량한 보컬과 어쿠스틱 요소가 조화로워 데이트나 카페에서 듣기 좋습니다." },
-
-  { id:47, title:"내 손을 잡아",        artist:"다이나믹듀오",          aKey:"다이나믹듀오",  year:2012, color:"#f59e0b",
-    mood:["설레는","따뜻한"],       situation:["드라이브","데이트","여행"],       genre:["힙합","R&B"],
-    bpm:88, energy:"중간", vibe:"달콤하고 여유로움",
-    ai:"힙합과 R&B를 달콤하게 결합한 다이나믹 듀오의 러브송. 함께하는 설레임을 표현한 가사와 편안한 비트가 드라이브나 데이트에 잘 어울립니다." },
-
-  { id:48, title:"STAY",                artist:"Zion.T",              aKey:"Zion.T",       year:2013, color:"#6ee7b7",
-    mood:["감성적인","여유로운"],    situation:["새벽","혼자있을때","카페"],       genre:["R&B","인디"],
-    bpm:70, energy:"낮음", vibe:"몽환적이고 편안함",
-    ai:"Zion.T 특유의 독특한 보컬과 lo-fi R&B 감성이 결합된 곡. 조용히 혼자 있고 싶은 순간, 특히 새벽과 카페 분위기에 완벽하게 녹아듭니다." },
-
-  { id:49, title:"거리에서",            artist:"성시경",               aKey:"성시경",        year:2004, color:"#93c5fd",
-    mood:["감성적인","따뜻한"],     situation:["퇴근길","드라이브","비오는날"],   genre:["발라드","팝"],
-    bpm:74, energy:"낮음", vibe:"따뜻하고 서정적",
-    ai:"거리에서 우연히 마주친 설렘을 담은 성시경의 감성 발라드 명곡. 따뜻한 음색과 서정적인 멜로디가 퇴근길이나 빗속 드라이브와 잘 어울립니다." },
-
-  { id:50, title:"On & On",             artist:"Crush ft. Jeff Bernat", aKey:"Crush",      year:2013, color:"#f43f5e",
-    mood:["설레는","여유로운"],     situation:["드라이브","카페","새벽"],         genre:["R&B","소울"],
-    bpm:90, energy:"중간", vibe:"달콤하고 부드러움",
-    ai:"Crush와 Jeff Bernat의 환상적인 콜라보로 탄생한 달콤한 소울 R&B. 부드럽고 감각적인 보컬이 드라이브나 새벽 카페 분위기를 완성합니다." },
-];
+let SONGS = [];
 
 const TAGS = {
   mood:      ["신나는","에너제틱","설레는","감성적인","따뜻한","몽환적인","강렬한","여유로운"],
@@ -923,6 +525,7 @@ function init() {
   renderChips('genre',     'genChips',  TAGS.genre);
   renderChips('artist',    'artChips',  TAGS.artist);
   renderSongs();
+  updateAuthUI();
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -930,7 +533,7 @@ function init() {
 // ═══════════════════════════════════════════════════════════
 function goStep(n) {
   document.querySelectorAll('.step-section').forEach((el, i) => el.classList.toggle('active', i === n));
-  ['dot0','dot1','dot2'].forEach((id, i) => {
+  ['dot0','dot1'].forEach((id, i) => {
     const d = document.getElementById(id);
     d.classList.remove('active','done');
     if (i === n) d.classList.add('active');
@@ -942,119 +545,49 @@ function goStep(n) {
 }
 
 function goBack() {
-  if (S.step === 2) { goStep(1); renderSongs(); }
-  else if (S.step === 1) resetAll();
+  if (S.step === 1) { goStep(0); renderSongs(); }
 }
 
 // ═══════════════════════════════════════════════════════════
-//  LANDING
+//  AUTH UI (로그인 섹션만 전환 — 메인 화면 자체는 항상 노출)
 // ═══════════════════════════════════════════════════════════
-// ═══════════════════════════════════════════════════════════
-//  PLATFORM SIMULATION
-// ═══════════════════════════════════════════════════════════
-const PLATFORMS = {
-  youtube: { name:'YouTube',     color:'#ff4444', dot:'#ff4444',
-    msgs:['YouTube 재생목록 분석 중…','동영상 정보 파싱 중…','AI 음악 태깅 중…','플레이리스트 생성 중…'],
-    playlists:['나의 믹스','발견: 주간 추천','저장된 재생목록','내가 좋아하는 음악','오늘의 추천'],
-    genreBias:['팝','댄스','힙합'] },
-  spotify: { name:'Spotify',     color:'#1db954', dot:'#1db954',
-    msgs:['Spotify 연결 중…','트랙 데이터 로드 중…','오디오 특성 분석 중…','플레이리스트 생성 중…'],
-    playlists:['Discover Weekly','Daily Mix 1','Liked Songs','Release Radar','Made For You'],
-    genreBias:['인디','R&B','팝'] },
-  apple:   { name:'Apple Music', color:'#fc6464', dot:'#fc6464',
-    msgs:['Apple Music 연결 중…','라이브러리 스캔 중…','트랙 분석 중…','플레이리스트 생성 중…'],
-    playlists:['즐겨 찾기','New Music Mix','Chill Mix','Favorites Mix','최근 추가 항목'],
-    genreBias:['발라드','팝','인디'] },
-  flo:     { name:'FLO',         color:'#8b83ff', dot:'#8b83ff',
-    msgs:['FLO 연결 중…','플레이리스트 로드 중…','음악 데이터 분석 중…','플레이리스트 생성 중…'],
-    playlists:['내 플레이리스트','FLO 추천','최근 들은 곡','좋아요 한 곡','FLO 오늘의 음악'],
-    genreBias:['발라드','R&B','인디'] },
-  melon:   { name:'Melon',       color:'#00cd3c', dot:'#00cd3c',
-    msgs:['Melon 연결 중…','차트 데이터 불러오는 중…','태그 분석 중…','플레이리스트 생성 중…'],
-    playlists:['내 음악함','멜론 차트 TOP100','24Hits','지금 이 순간','멜론 DJ'],
-    genreBias:['팝','발라드','댄스'] },
-  bugs:    { name:'Bugs',        color:'#ff7800', dot:'#ff7800',
-    msgs:['Bugs 연결 중…','앨범 정보 로드 중…','음악 분석 중…','플레이리스트 생성 중…'],
-    playlists:['내 보관함','Bugs 추천','최신 음악','장르 추천','Bugs 오늘의 차트'],
-    genreBias:['힙합','인디','R&B'] },
-};
-
-function detectPlatform(url) {
-  const u = url.toLowerCase();
-  if (u.includes('youtube.com') || u.includes('youtu.be')) return 'youtube';
-  if (u.includes('spotify.com'))                           return 'spotify';
-  if (u.includes('music.apple.com') || u.includes('apple.com')) return 'apple';
-  if (u.includes('flo.kr') || u.includes('flomm'))        return 'flo';
-  if (u.includes('melon.com'))                             return 'melon';
-  if (u.includes('bugs.co.kr'))                            return 'bugs';
-  return 'youtube';
+function updateAuthUI() {
+  const loggedIn = !!spotifyAccessToken();
+  document.getElementById('spotifyLoggedOut').style.display = loggedIn ? 'none' : '';
+  document.getElementById('spotifyLoggedIn').style.display = loggedIn ? '' : 'none';
 }
 
-function simulatePlatformImport(platformKey) {
-  const p = PLATFORMS[platformKey];
-  if (!p) return;
-  const playlist = p.playlists[Math.floor(Math.random() * p.playlists.length)];
-  // bias playlist toward platform's genre tendencies
-  S.gen = [];
-  buildPlaylist();
-  startLoad(`${p.name}: ${playlist}`, false, platformKey);
+// ═══════════════════════════════════════════════════════════
+//  LOADING OVERLAY (실제 Spotify API 호출용)
+// ═══════════════════════════════════════════════════════════
+function showLoading(msg) {
+  document.getElementById('loadingMsg').textContent = msg;
+  const bar = document.getElementById('loadingBar');
+  bar.style.transition = 'none'; bar.style.width = '0';
+  requestAnimationFrame(() => { bar.style.transition = 'width 1.2s ease'; bar.style.width = '85%'; });
+  document.getElementById('loadingOverlay').classList.add('active');
+}
+function updateLoadingMsg(msg) {
+  document.getElementById('loadingMsg').textContent = msg;
+}
+function hideLoading() {
+  const bar = document.getElementById('loadingBar');
+  bar.style.transition = 'width .2s ease'; bar.style.width = '100%';
+  setTimeout(() => {
+    document.getElementById('loadingOverlay').classList.remove('active');
+    bar.style.width = '0';
+  }, 200);
 }
 
-function handleUrl() {
-  const v = document.getElementById('urlInput').value.trim();
-  if (!v) {
-    const inp = document.getElementById('urlInput');
-    inp.style.borderColor = '#ef4444'; inp.focus();
-    setTimeout(() => { inp.style.borderColor = ''; }, 1500);
-    return;
-  }
-  const platform = detectPlatform(v);
-  startLoad(v.length > 44 ? v.slice(0, 44) + '…' : v, false, platform);
-}
-
+// ═══════════════════════════════════════════════════════════
+//  SITUATION QUICK PICK
+// ═══════════════════════════════════════════════════════════
 function handleSit(sit) {
   S.mood = []; S.sit = [sit]; S.gen = []; S.art = [];
   document.querySelectorAll('.chip').forEach(c =>
     c.classList.toggle('active', c.dataset.type === 'situation' && c.dataset.tag === sit)
   );
-  buildPlaylist();
-  startLoad('상황 선택: ' + sit, true);
-}
-
-function startLoad(label, isSit, platform) {
-  const overlay = document.getElementById('loadingOverlay');
-  const msg     = document.getElementById('loadingMsg');
-  const bar     = document.getElementById('loadingBar');
-  const p       = platform ? PLATFORMS[platform] : null;
-
-  bar.style.transition = 'none'; bar.style.width = '0';
-  bar.style.background = p ? p.color : '';
-  requestAnimationFrame(() => { bar.style.transition = 'width 1.4s ease'; bar.style.width = '100%'; });
-
-  const msgs = isSit
-    ? [`'${S.sit[0]}' 곡 분석 중…`, '무드 추론 중…', '장르 매핑 중…', '플레이리스트 생성 중…']
-    : p ? p.msgs
-    : ['플레이리스트 분석 중…', '곡 목록 불러오는 중…', 'AI 태깅 로딩…', '플레이리스트 준비 중…'];
-
-  let i = 0; msg.textContent = msgs[0];
-  const t = setInterval(() => { msg.textContent = msgs[++i % msgs.length]; }, 420);
-  overlay.classList.add('active');
-  setTimeout(() => {
-    clearInterval(t);
-    bar.style.background = '';
-    overlay.classList.remove('active');
-
-    document.getElementById('badgeText').textContent = label;
-    const dot = document.getElementById('badgeDot');
-    if (dot) dot.style.background = p ? p.color : '#ff4444';
-
-    document.getElementById('s1Title').textContent = isSit
-      ? `'${S.sit[0]}' 플레이리스트 준비 완료!`
-      : p ? `${p.name}에서 플레이리스트를 가져왔어요!`
-      : '플레이리스트를 불러왔어요!';
-
-    renderSongs(); updateMakeBtn(); goStep(1);
-  }, 1700);
+  buildPlaylist(); renderSongs(); updateMakeBtn();
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -1122,7 +655,8 @@ function getDisplayed() {
   return S.playlist.filter(s =>
     s.title.toLowerCase().includes(S.query) ||
     s.artist.toLowerCase().includes(S.query) ||
-    s.aKey.toLowerCase().includes(S.query)
+    s.aKey.toLowerCase().includes(S.query) ||
+    s.mood.some(m => m.toLowerCase().includes(S.query))
   );
 }
 
@@ -1137,14 +671,16 @@ function updateMakeBtn() {
 }
 
 // ═══════════════════════════════════════════════════════════
-//  SONG LIST (STEP 1)
+//  SONG LIST
 // ═══════════════════════════════════════════════════════════
 function renderSongs() {
   const el = document.getElementById('songList');
   if (!el) return;
   const list = getDisplayed();
   if (!list.length) {
-    el.innerHTML = `<div class="no-result"><div class="no-result-icon">🎵</div><p>조건에 맞는 곡이 없어요.<br>다른 조건을 시도해보세요.</p></div>`;
+    el.innerHTML = SONGS.length
+      ? `<div class="no-result"><div class="no-result-icon">🎵</div><p>조건에 맞는 곡이 없어요.<br>다른 조건을 시도해보세요.</p></div>`
+      : `<div class="no-result"><div class="no-result-icon">🎧</div><p>아직 불러온 곡이 없어요.<br>위에서 Spotify에 로그인해 플레이리스트를 불러오거나, 상황을 선택해보세요.</p></div>`;
     return;
   }
   el.innerHTML = list.map((s, i) => `
@@ -1164,7 +700,7 @@ function renderSongs() {
 }
 
 // ═══════════════════════════════════════════════════════════
-//  RESULTS (STEP 2)
+//  RESULTS
 // ═══════════════════════════════════════════════════════════
 function goResults() {
   const list = getDisplayed();
@@ -1179,7 +715,7 @@ function goResults() {
     ? allTags.join('')
     : `<span style="font-size:12px;color:var(--t3)">조건 없음 — 전체 ${SONGS.length}곡</span>`;
   document.getElementById('resultSub').textContent =
-    `${list.length}곡 · 관련도 순 · 곡을 탭하면 AI 분석과 연관곡을 볼 수 있어요`;
+    `${list.length}곡 · 관련도 순 · 곡을 탭하면 상세 정보와 연관곡을 볼 수 있어요`;
   document.getElementById('resultList').innerHTML = list.map(s => `
     <div class="result-card" onclick="openModal(${s.id})">
       <div class="result-avatar" style="background:${s.color}20;color:${s.color};">${s.artist[0]}</div>
@@ -1191,10 +727,10 @@ function goResults() {
           ${s.situation.map(t=>`<span class="stag situation">${t}</span>`).join('')}
           ${s.genre.map(t=>`<span class="stag genre">${t}</span>`).join('')}
         </div>
-        <div class="ai-hint">🤖 <em>AI 분석 · 연관곡 보기</em></div>
+        <div class="ai-hint">🎵 <em>상세 정보 · 연관곡 보기</em></div>
       </div>
     </div>`).join('');
-  goStep(2);
+  goStep(1);
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -1222,7 +758,7 @@ function openModal(id) {
       <div><div class="modal-title">${s.title}</div><div class="modal-artist">${s.artist} · ${s.year}</div></div>
     </div>
     <div class="modal-sec">
-      <div class="modal-sec-label">AI 분석 코멘트</div>
+      <div class="modal-sec-label">코멘트</div>
       <div class="ai-box">${s.ai}</div>
     </div>
     <div class="modal-sec">
@@ -1232,10 +768,10 @@ function openModal(id) {
       <div class="tag-line"><span class="tag-line-label">장르</span>${s.genre.map(t=>`<span class="stag genre">${t}</span>`).join('')}</div>
     </div>
     <div class="modal-sec">
-      <div class="modal-sec-label">오디오 특징</div>
+      <div class="modal-sec-label">트랙 정보</div>
       <div class="stats">
-        <div class="stat"><div class="stat-val">${s.bpm}</div><div class="stat-lbl">BPM</div></div>
-        <div class="stat"><div class="stat-val">${s.energy}</div><div class="stat-lbl">에너지</div></div>
+        <div class="stat"><div class="stat-val sm">${s.bpm}</div><div class="stat-lbl">BPM</div></div>
+        <div class="stat"><div class="stat-val">${s.energy}</div><div class="stat-lbl">유형</div></div>
         <div class="stat"><div class="stat-val sm">${s.vibe}</div><div class="stat-lbl">분위기</div></div>
       </div>
     </div>
@@ -1254,7 +790,7 @@ function openModal(id) {
           </div>`).join('')}
       </div>
     </div>` : ''}
-    <div class="note">실제 AI 분석이 아닌 샘플 데이터입니다</div>`;
+    <div class="note">무드·장르 태그는 Spotify 트랙 정보 기반 자동 추정입니다</div>`;
   document.getElementById('backdrop').classList.add('active');
 }
 
@@ -1262,165 +798,393 @@ function closeModal() { document.getElementById('backdrop').classList.remove('ac
 function backdropClick(e) { if (e.target === document.getElementById('backdrop')) closeModal(); }
 
 // ═══════════════════════════════════════════════════════════
-//  RESET
+//  RESET FILTERS
 // ═══════════════════════════════════════════════════════════
 function resetAll() {
   S.mood = []; S.sit = []; S.gen = []; S.art = []; S.query = ''; S.playlist = [...SONGS];
   document.querySelectorAll('.chip').forEach(c => c.classList.remove('active','inferred'));
   const si = document.getElementById('searchInput'); if (si) si.value = '';
-  document.getElementById('searchClear').classList.remove('visible');
-  document.getElementById('urlInput').value = '';
+  const clear = document.getElementById('searchClear'); if (clear) clear.classList.remove('visible');
   document.getElementById('inferBox').style.display = 'none';
   document.getElementById('rankNote').textContent = '';
+  renderSongs(); updateMakeBtn();
   goStep(0);
 }
 
-// ═══════════════════════════════════════════════════════════
-//  FINDER: 탭 전환
-// ═══════════════════════════════════════════════════════════
-function switchFinder(tab) {
-  const isMic = tab === 'mic';
-  document.getElementById('tabMic').classList.toggle('active', isMic);
-  document.getElementById('tabLyrics').classList.toggle('active', !isMic);
-  document.getElementById('paneMic').classList.toggle('active', isMic);
-  document.getElementById('paneLyrics').classList.toggle('active', !isMic);
-  if (!isMic && micListening) stopListening();
+// ============================================================================
+//  SPOTIFY 로그인 및 데이터 연동 (PKCE OAuth, 70:30 믹스)
+// ============================================================================
+// 배포자가 Spotify Developer Dashboard에서 발급받은 Client ID를 아래에 한 번만
+// 채워 넣으면 됩니다. 방문자에게는 이 값이 전혀 노출되지 않고, 로그인 버튼을
+// 누르면 Spotify가 직접 호스팅하는 로그인 화면(이메일/비밀번호 등)으로 이동합니다.
+// Redirect URI는 Spotify Dashboard에 이 페이지의 실제 배포 주소로 등록해야 합니다.
+const SPOTIFY_CLIENT_ID = 'YOUR_SPOTIFY_CLIENT_ID';
+
+const SPOTIFY_AUTH_URL = 'https://accounts.spotify.com/authorize';
+const SPOTIFY_TOKEN_URL = 'https://accounts.spotify.com/api/token';
+const SPOTIFY_API_URL = 'https://api.spotify.com/v1';
+const SPOTIFY_SCOPES = [
+  'playlist-read-private',
+  'playlist-read-collaborative',
+  'playlist-modify-private',
+  'playlist-modify-public',
+  'user-read-private'
+].join(' ');
+const SPOTIFY_STORAGE = {
+  accessToken: 'spotify_access_token',
+  refreshToken: 'spotify_refresh_token',
+  expiresAt: 'spotify_expires_at',
+  verifier: 'spotify_pkce_verifier',
+  state: 'spotify_auth_state',
+  userId: 'spotify_user_id'
+};
+let spotifyImportedTracks = [];
+let spotifyRecommendedTracks = [];
+let spotifyLocalId = 100000;
+
+function spotifyStatus(msg) {
+  const a = document.getElementById('spotifyStatus');
+  const b = document.getElementById('spotifyStatusLoggedIn');
+  if (a) a.textContent = msg;
+  if (b) b.textContent = msg;
 }
 
-// ═══════════════════════════════════════════════════════════
-//  AUDIO RECOGNITION
-// ═══════════════════════════════════════════════════════════
-let micListening = false;
-
-function toggleMic() {
-  if (micListening) { stopListening(); return; }
-  micListening = true;
-
-  document.querySelectorAll('.mic-ripple').forEach(r => r.classList.add('active'));
-  document.getElementById('micWave').classList.add('visible');
-  document.getElementById('micBtn').textContent = '⏹';
-  document.getElementById('micStatus').textContent = '듣는 중...';
-  document.getElementById('micSub').textContent = '음악을 마이크에 들려주세요';
-
-  const doListen = () => {
-    const msgs = ['오디오 감지 중...', '음악 지문 분석 중...', '데이터베이스 매칭 중...', '결과 찾는 중...'];
-    let i = 0;
-    const t = setInterval(() => { i++; if (i < msgs.length) document.getElementById('micStatus').textContent = msgs[i]; }, 800);
-    setTimeout(() => {
-      clearInterval(t);
-      if (!micListening) return;
-      stopListening();
-      showRecognitionResult(SONGS[Math.floor(Math.random() * SONGS.length)]);
-    }, 3500);
-  };
-
-  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-    navigator.mediaDevices.getUserMedia({ audio: true })
-      .then(stream => { window._micStream = stream; doListen(); })
-      .catch(() => doListen());
-  } else {
-    doListen();
-  }
+function spotifyRedirectUri() {
+  return window.location.origin + window.location.pathname;
 }
 
-function stopListening() {
-  micListening = false;
-  if (window._micStream) { window._micStream.getTracks().forEach(t => t.stop()); window._micStream = null; }
-  document.querySelectorAll('.mic-ripple').forEach(r => r.classList.remove('active'));
-  document.getElementById('micWave').classList.remove('visible');
-  document.getElementById('micBtn').textContent = '🎤';
-  document.getElementById('micStatus').textContent = '마이크를 눌러 음악 인식';
-  document.getElementById('micSub').textContent = '주변에서 재생 중인 음악을 찾아드려요';
+function randomString(length = 64) {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
+  const bytes = new Uint8Array(length);
+  crypto.getRandomValues(bytes);
+  return [...bytes].map(b => chars[b % chars.length]).join('');
 }
 
-function showRecognitionResult(s) {
-  document.getElementById('modalBody').innerHTML = `
-    <div class="modal-top"><button class="modal-close" onclick="closeModal()">닫기 ✕</button></div>
-    <div style="text-align:center;padding:4px 0 18px;">
-      <div style="font-size:11px;color:var(--pl);text-transform:uppercase;letter-spacing:.5px;margin-bottom:14px;">🎤 음악 인식 완료</div>
-      <div style="width:64px;height:64px;border-radius:14px;background:${s.color}20;color:${s.color};font-size:22px;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">${s.artist[0]}</div>
-      <div style="font-size:18px;font-weight:700;margin-bottom:4px;">${s.title}</div>
-      <div style="font-size:13px;color:var(--t2);margin-bottom:14px;">${s.artist} · ${s.year}</div>
-      <div style="display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin-bottom:18px;">
-        ${s.mood.map(t=>`<span class="stag mood">${t}</span>`).join('')}
-        ${s.genre.map(t=>`<span class="stag genre">${t}</span>`).join('')}
-      </div>
-    </div>
-    <div class="ai-box" style="margin-bottom:16px;font-size:12px;">${s.ai}</div>
-    <div style="display:flex;flex-direction:column;gap:8px;">
-      <button class="btn-make" style="font-size:13px;padding:13px;" onclick="closeModal();makePlaylistFromSong(${s.id})">이 곡 기반 플레이리스트 만들기 →</button>
-      <button class="btn-sec" onclick="openModal(${s.id})">곡 상세 정보 보기</button>
-    </div>
-    <div class="note" style="margin-top:10px;">데모 버전 · 실제 음악 인식 시뮬레이션</div>`;
-  document.getElementById('backdrop').classList.add('active');
+async function sha256(value) {
+  const data = new TextEncoder().encode(value);
+  return crypto.subtle.digest('SHA-256', data);
 }
 
-// ═══════════════════════════════════════════════════════════
-//  LYRICS SEARCH
-// ═══════════════════════════════════════════════════════════
-let lyricsTimer = null;
-
-function handleLyricsInput(v) {
-  clearTimeout(lyricsTimer);
-  if (v.trim().length >= 4) {
-    lyricsTimer = setTimeout(searchByLyrics, 500);
-  } else {
-    const el = document.getElementById('lyricsMatches');
-    el.classList.remove('visible');
-    el.innerHTML = '';
-  }
+function base64Url(buffer) {
+  return btoa(String.fromCharCode(...new Uint8Array(buffer))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
 
-function searchByLyrics() {
-  const query = document.getElementById('lyricsInput').value.trim().toLowerCase();
-  if (!query) return;
-
-  const words = query.split(/\s+/).filter(w => w.length >= 2);
-  const results = SONGS.map(s => {
-    const lyr = (LYRICS[s.id] || '').toLowerCase();
-    const titleArtist = (s.title + ' ' + s.artist).toLowerCase();
-    let score = 0;
-    words.forEach(w => {
-      if (lyr.includes(w)) score += 3;
-      if (titleArtist.includes(w)) score += 2;
-    });
-    return { s, score };
-  }).filter(x => x.score > 0).sort((a, b) => b.score - a.score).slice(0, 5);
-
-  const el = document.getElementById('lyricsMatches');
-  if (!results.length) {
-    el.classList.add('visible');
-    el.innerHTML = `<div class="lyrics-match-label">검색 결과 없음</div><div style="font-size:12px;color:var(--t3)">다른 가사를 입력해보세요.</div>`;
+async function spotifyLogin() {
+  if (!SPOTIFY_CLIENT_ID || SPOTIFY_CLIENT_ID === 'YOUR_SPOTIFY_CLIENT_ID') {
+    spotifyStatus('지금은 로그인을 사용할 수 없습니다. 잠시 후 다시 시도해 주세요.');
     return;
   }
-  el.classList.add('visible');
-  el.innerHTML = `<div class="lyrics-match-label">가사 검색 결과 — ${results.length}곡 발견</div>` +
-    results.map(({ s }) => `
-      <div class="lyrics-match-item" onclick="openModal(${s.id})">
-        <div class="lyrics-match-avatar" style="background:${s.color}20;color:${s.color};">${s.artist[0]}</div>
-        <div class="lyrics-match-info">
-          <div class="lyrics-match-title">${s.title}</div>
-          <div class="lyrics-match-artist">${s.artist}</div>
-        </div>
-        <button class="lyrics-match-btn" onclick="event.stopPropagation();makePlaylistFromSong(${s.id})">플레이리스트</button>
-      </div>`).join('');
+  const verifier = randomString(96);
+  const challenge = base64Url(await sha256(verifier));
+  const state = randomString(24);
+  sessionStorage.setItem(SPOTIFY_STORAGE.verifier, verifier);
+  sessionStorage.setItem(SPOTIFY_STORAGE.state, state);
+
+  const params = new URLSearchParams({
+    response_type: 'code',
+    client_id: SPOTIFY_CLIENT_ID,
+    scope: SPOTIFY_SCOPES,
+    redirect_uri: spotifyRedirectUri(),
+    state,
+    code_challenge_method: 'S256',
+    code_challenge: challenge
+  });
+  window.location.href = `${SPOTIFY_AUTH_URL}?${params.toString()}`;
 }
 
-// ═══════════════════════════════════════════════════════════
-//  MAKE PLAYLIST FROM SONG
-// ═══════════════════════════════════════════════════════════
-function makePlaylistFromSong(id) {
-  const s = SONGS.find(x => x.id === id);
-  if (!s) return;
-  S.mood = [...s.mood];
-  S.sit  = s.situation.slice(0, 1);
-  S.gen  = [...s.genre];
-  S.art  = [];
-  buildPlaylist();
-  startLoad(`"${s.title}" 기반`, true);
+async function handleSpotifyRedirect() {
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get('code');
+  const state = params.get('state');
+  const error = params.get('error');
+  if (error) { spotifyStatus(`Spotify 로그인 실패: ${error}`); return; }
+  if (!code) {
+    updateAuthUI();
+    if (spotifyAccessToken()) loadSpotifyPlaylists();
+    return;
+  }
+
+  const expectedState = sessionStorage.getItem(SPOTIFY_STORAGE.state);
+  const verifier = sessionStorage.getItem(SPOTIFY_STORAGE.verifier);
+  if (!SPOTIFY_CLIENT_ID || !verifier || state !== expectedState) {
+    spotifyStatus('Spotify 로그인 상태를 확인할 수 없습니다. 다시 로그인해 주세요.');
+    return;
+  }
+
+  spotifyStatus('Spotify 로그인 처리 중...');
+  const body = new URLSearchParams({
+    client_id: SPOTIFY_CLIENT_ID,
+    grant_type: 'authorization_code',
+    code,
+    redirect_uri: spotifyRedirectUri(),
+    code_verifier: verifier
+  });
+  const res = await fetch(SPOTIFY_TOKEN_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body
+  });
+  if (!res.ok) {
+    spotifyStatus('로그인에 실패했습니다. 잠시 후 다시 시도해 주세요.');
+    return;
+  }
+  const token = await res.json();
+  saveSpotifyToken(token);
+  sessionStorage.removeItem(SPOTIFY_STORAGE.verifier);
+  sessionStorage.removeItem(SPOTIFY_STORAGE.state);
+  history.replaceState({}, document.title, spotifyRedirectUri());
+  updateAuthUI();
+  spotifyStatus('Spotify 로그인 완료. 플레이리스트 목록을 불러오는 중...');
+  await loadSpotifyPlaylists();
+}
+
+function saveSpotifyToken(token) {
+  localStorage.setItem(SPOTIFY_STORAGE.accessToken, token.access_token);
+  if (token.refresh_token) localStorage.setItem(SPOTIFY_STORAGE.refreshToken, token.refresh_token);
+  localStorage.setItem(SPOTIFY_STORAGE.expiresAt, String(Date.now() + token.expires_in * 1000));
+}
+
+function spotifyAccessToken() {
+  const token = localStorage.getItem(SPOTIFY_STORAGE.accessToken);
+  const expiresAt = Number(localStorage.getItem(SPOTIFY_STORAGE.expiresAt) || 0);
+  if (!token || Date.now() > expiresAt - 30000) return '';
+  return token;
+}
+
+function spotifyLogout() {
+  Object.values(SPOTIFY_STORAGE).forEach(k => { localStorage.removeItem(k); sessionStorage.removeItem(k); });
+  SONGS = [];
+  S.mood = []; S.sit = []; S.gen = []; S.art = []; S.query = ''; S.playlist = [];
+  TAGS.artist = [];
+  renderChips('artist', 'artChips', TAGS.artist);
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active','inferred'));
+  document.getElementById('badgeText').textContent = '곡 데이터 없음';
+  document.getElementById('badgeDot').style.background = 'var(--bd2)';
+  document.getElementById('s1Title').textContent = '무드에 맞는 곡을 찾아보세요';
+  updateAuthUI();
+  renderSongs(); updateMakeBtn();
+  spotifyStatus('Spotify 연결을 해제했습니다.');
+  goStep(0);
+}
+
+async function spotifyApi(path, options = {}) {
+  const token = spotifyAccessToken();
+  if (!token) throw new Error('Spotify 로그인이 필요합니다.');
+  const headers = { Authorization: `Bearer ${token}`, ...(options.headers || {}) };
+  const res = await fetch(`${SPOTIFY_API_URL}${path}`, { ...options, headers });
+  if (!res.ok) {
+    const detail = await res.text();
+    throw new Error(`Spotify API 오류 ${res.status}: ${detail}`);
+  }
+  return res.status === 204 ? null : res.json();
+}
+
+async function fetchAllSpotify(path) {
+  let url = `${SPOTIFY_API_URL}${path}`;
+  const token = spotifyAccessToken();
+  const items = [];
+  while (url) {
+    const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+    if (!res.ok) throw new Error(`Spotify API 오류 ${res.status}`);
+    const data = await res.json();
+    items.push(...(data.items || []));
+    url = data.next;
+  }
+  return items;
+}
+
+async function loadSpotifyPlaylists() {
+  try {
+    spotifyStatus('Spotify 플레이리스트 목록을 불러오는 중...');
+    const playlists = await fetchAllSpotify('/me/playlists?limit=50');
+    const select = document.getElementById('spotifyPlaylistSelect');
+    select.innerHTML = playlists.length
+      ? playlists.map(p => `<option value="${p.id}">${escapeHtml(p.name)} · ${p.tracks.total}곡</option>`).join('')
+      : '<option value="">가져올 플레이리스트가 없습니다</option>';
+    spotifyStatus(`${playlists.length}개의 Spotify 플레이리스트를 찾았습니다.`);
+  } catch (err) {
+    spotifyStatus(err.message || '플레이리스트 목록을 불러오지 못했습니다.');
+  }
+}
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"]/g, ch => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[ch]));
+}
+
+async function importSelectedSpotifyPlaylist() {
+  const select = document.getElementById('spotifyPlaylistSelect');
+  const playlistId = select?.value;
+  if (!playlistId) { spotifyStatus('가져올 Spotify 플레이리스트를 선택하세요.'); return; }
+  try {
+    showLoading('Spotify 곡을 가져오는 중...');
+    spotifyLocalId = 100000;
+    const rawItems = await fetchAllSpotify(`/playlists/${playlistId}/tracks?limit=100&fields=items(track(id,name,uri,duration_ms,popularity,artists(id,name),album(images,release_date))),next`);
+    const baseTracks = rawItems.map(item => item.track).filter(t => t && t.id).map(t => normalizeSpotifyTrack(t));
+    spotifyImportedTracks = uniqueByUri(baseTracks);
+
+    updateLoadingMsg('추천 후보를 모으는 중...');
+    spotifyRecommendedTracks = await buildSpotifyRecommendations(spotifyImportedTracks);
+    const mixed = mixSpotifyTracks7030(spotifyImportedTracks, spotifyRecommendedTracks);
+    setSpotifySongs(mixed);
+
+    document.getElementById('badgeText').textContent = `Spotify 7:3 · ${select.options[select.selectedIndex].text}`;
+    document.getElementById('badgeDot').style.background = '#1db954';
+    document.getElementById('s1Title').textContent = 'Spotify 플레이리스트를 7:3으로 구성했어요!';
+    spotifyStatus(`가져온 곡 ${spotifyImportedTracks.length}곡 + 추천 ${mixed.filter(s => s.recommended).length}곡으로 구성했습니다.`);
+  } catch (err) {
+    spotifyStatus(err.message || 'Spotify 플레이리스트를 가져오지 못했습니다.');
+  } finally {
+    hideLoading();
+  }
+}
+
+function normalizeSpotifyTrack(track, recommended = false) {
+  const artist = (track.artists || []).map(a => a.name).join(', ') || 'Unknown Artist';
+  const firstArtist = track.artists?.[0]?.name || artist;
+  const inferred = inferTagsFromSpotify(track, artist);
+  return {
+    id: spotifyLocalId++,
+    spotifyId: track.id,
+    spotifyUri: track.uri,
+    recommended,
+    title: track.name,
+    artist,
+    aKey: firstArtist,
+    year: Number((track.album?.release_date || '').slice(0, 4)) || '',
+    color: recommended ? '#1db954' : '#8b5cf6',
+    mood: inferred.mood,
+    situation: inferred.situation,
+    genre: inferred.genre,
+    bpm: '-',
+    energy: recommended ? '추천' : '원곡',
+    vibe: recommended ? '추천 삽입곡' : '내 플레이리스트',
+    ai: recommended
+      ? 'Spotify에서 가져온 내 플레이리스트의 아티스트 흐름을 바탕으로 중간에 삽입한 추천곡입니다.'
+      : 'Spotify에서 가져온 내 플레이리스트 곡입니다. 제목·아티스트·인기도 기반으로 무드/장르 태그를 자동 추정했습니다.'
+  };
+}
+
+function inferTagsFromSpotify(track, artistText) {
+  const text = `${track.name} ${artistText}`.toLowerCase();
+  const popularity = track.popularity || 0;
+  const mood = [];
+  const situation = [];
+  const genre = [];
+
+  if (popularity >= 70) mood.push('신나는');
+  if (/love|밤|night|비|rain|sad|blue|slow|편지|그리움/.test(text)) mood.push('감성적인');
+  if (/dance|party|mix|club|dynamite|super|beat/.test(text)) mood.push('에너제틱');
+  if (/drive|city|road|summer|여행/.test(text)) situation.push('드라이브');
+  if (/study|lofi|focus|piano|acoustic/.test(text)) situation.push('공부/집중');
+  if (/party|dance|club/.test(text)) situation.push('파티');
+  if (/rain|비/.test(text)) situation.push('비오는날');
+  if (/r&b|soul|dean|crush|heize/.test(text)) genre.push('R&B');
+  if (/hip|rap|zico|jay|kid|travis|drake/.test(text)) genre.push('힙합');
+  if (/ballad|iu|성시경|폴킴/.test(text)) genre.push('발라드');
+  if (/indie|혁오|잔나비|akmu/.test(text)) genre.push('인디');
+  if (/dance|club|edm/.test(text)) genre.push('댄스');
+  if (!genre.length) genre.push('팝');
+  if (!mood.length) mood.push(popularity >= 55 ? '설레는' : '여유로운');
+  if (!situation.length) situation.push(popularity >= 65 ? '드라이브' : '카페');
+  return { mood: [...new Set(mood)].slice(0, 2), situation: [...new Set(situation)].slice(0, 2), genre: [...new Set(genre)].slice(0, 2) };
+}
+
+async function buildSpotifyRecommendations(baseTracks) {
+  const baseUris = new Set(baseTracks.map(t => t.spotifyUri));
+  const artistCounts = new Map();
+  baseTracks.forEach(t => artistCounts.set(t.aKey, (artistCounts.get(t.aKey) || 0) + 1));
+  const topArtists = [...artistCounts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8).map(([name]) => name);
+  const found = [];
+
+  for (const artistName of topArtists) {
+    const q = encodeURIComponent(`artist:${artistName}`);
+    const data = await spotifyApi(`/search?type=track&limit=8&market=KR&q=${q}`);
+    (data.tracks?.items || []).forEach(track => {
+      if (!baseUris.has(track.uri)) found.push(normalizeSpotifyTrack(track, true));
+    });
+  }
+  return uniqueByUri(found).slice(0, Math.ceil(baseTracks.length * 3 / 7));
+}
+
+function uniqueByUri(tracks) {
+  const seen = new Set();
+  return tracks.filter(t => {
+    const key = t.spotifyUri || `${t.title}-${t.artist}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+function mixSpotifyTracks7030(baseTracks, recommendedTracks) {
+  const recTarget = Math.min(recommendedTracks.length, Math.ceil(baseTracks.length * 3 / 7));
+  const pickedRecs = recommendedTracks.slice(0, recTarget);
+  if (!pickedRecs.length) return baseTracks;
+
+  const result = [];
+  let recIndex = 0;
+  baseTracks.forEach((track, index) => {
+    result.push(track);
+    const expectedRecs = Math.floor(((index + 1) / baseTracks.length) * recTarget);
+    while (recIndex < expectedRecs && pickedRecs[recIndex]) {
+      result.push(pickedRecs[recIndex]);
+      recIndex++;
+    }
+  });
+  while (recIndex < pickedRecs.length) result.push(pickedRecs[recIndex++]);
+  return result;
+}
+
+function setSpotifySongs(tracks) {
+  SONGS = tracks;
+  S.mood = []; S.sit = []; S.gen = []; S.art = []; S.query = ''; S.playlist = [...SONGS];
+  TAGS.artist = [...new Set(SONGS.map(s => s.aKey))].slice(0, 24);
+  renderChips('artist', 'artChips', TAGS.artist);
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active','inferred'));
+  const searchInput = document.getElementById('searchInput');
+  if (searchInput) searchInput.value = '';
+  const clear = document.getElementById('searchClear');
+  if (clear) clear.classList.remove('visible');
+  renderSongs();
+  updateMakeBtn();
+}
+
+async function createSpotifyPlaylistFromCurrent() {
+  const tracks = getDisplayed().filter(t => t.spotifyUri);
+  if (!tracks.length) { spotifyStatus('Spotify에 저장할 실제 Spotify 곡이 없습니다.'); return; }
+  try {
+    spotifyStatus('Spotify에 새 플레이리스트를 만드는 중...');
+    let userId = localStorage.getItem(SPOTIFY_STORAGE.userId);
+    if (!userId) {
+      const me = await spotifyApi('/me');
+      userId = me.id;
+      localStorage.setItem(SPOTIFY_STORAGE.userId, userId);
+    }
+    const created = await spotifyApi(`/users/${encodeURIComponent(userId)}/playlists`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: `Playlist Maker 7:3 ${new Date().toLocaleDateString('ko-KR')}`,
+        description: '내 Spotify 플레이리스트 70% + 추천곡 30%로 만든 목록',
+        public: false
+      })
+    });
+    for (let i = 0; i < tracks.length; i += 100) {
+      await spotifyApi(`/playlists/${created.id}/tracks`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ uris: tracks.slice(i, i + 100).map(t => t.spotifyUri) })
+      });
+    }
+    spotifyStatus(`Spotify에 저장 완료: ${created.name}`);
+    window.open(created.external_urls.spotify, '_blank', 'noopener');
+  } catch (err) {
+    spotifyStatus(err.message || 'Spotify 저장에 실패했습니다.');
+  }
 }
 
 init();
+handleSpotifyRedirect();
 </script>
 </body>
 </html>
