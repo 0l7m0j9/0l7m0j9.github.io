@@ -123,6 +123,8 @@
     .chip.artist:hover,.chip.artist.active { background:var(--art-bg); color:var(--art-fg); border-color:var(--art-fg); }
     .chip.duration  { border-color:rgba(167,139,250,.35); color:var(--t2); }
     .chip.duration:hover,.chip.duration.active { background:rgba(124,58,237,.15); color:var(--pl); border-color:var(--pl); }
+    .chip.ratio     { border-color:rgba(167,139,250,.35); color:var(--t2); }
+    .chip.ratio:hover,.chip.ratio.active { background:rgba(124,58,237,.15); color:var(--pl); border-color:var(--pl); }
 
     /* Inference box */
     .infer-box { display:none; background:rgba(124,58,237,.06); border:1px solid rgba(167,139,250,.18); border-radius:11px; padding:12px 15px; margin-bottom:12px; }
@@ -272,7 +274,7 @@
           <div class="spotify-live-title">내 플레이리스트 불러오기</div>
           <button class="spotify-btn secondary" onclick="spotifyLogout()">로그아웃</button>
         </div>
-        <div class="spotify-live-note">가져온 곡 70%에 관련 아티스트 추천곡 30%를 섞어 새 목록을 구성합니다.</div>
+        <div class="spotify-live-note">아래에서 믹스 비율을 고르면, 가져온 곡에 관련 아티스트 추천곡을 그 비율대로 섞어 새 목록을 구성합니다.</div>
         <div class="spotify-row">
           <select class="spotify-select" id="spotifyPlaylistSelect">
             <option value="">Spotify 플레이리스트를 불러오는 중...</option>
@@ -280,11 +282,20 @@
           <button class="spotify-btn secondary" onclick="loadSpotifyPlaylists()">새로고침</button>
         </div>
         <div class="spotify-row">
-          <button class="spotify-btn" onclick="importSelectedSpotifyPlaylist()">선택한 목록으로 7:3 만들기</button>
+          <button class="spotify-btn" onclick="importSelectedSpotifyPlaylist()">선택한 목록 불러오기</button>
           <button class="spotify-btn secondary" onclick="createSpotifyPlaylistFromCurrent()">현재 결과를 Spotify에 저장</button>
         </div>
         <div class="spotify-status" id="spotifyStatusLoggedIn"></div>
       </div>
+    </div>
+
+    <div class="filter-group" style="max-width:540px;margin:0 auto 14px;">
+      <div class="filter-group-label">믹스 비율 (내 곡 : 추천곡)</div>
+      <div class="chip-list" id="ratioChips"></div>
+    </div>
+    <div class="filter-group" style="max-width:540px;margin:0 auto 20px;">
+      <div class="filter-group-label">재생 시간 (선택 — 위 비율에 맞춰 내 곡과 추천곡을 채워요)</div>
+      <div class="chip-list" id="durationChips"></div>
     </div>
 
     <div class="or-div">또는 상황을 바로 선택</div>
@@ -311,6 +322,7 @@
       <input class="search-input" id="searchInput" type="text" placeholder="곡 제목, 아티스트, 무드로 검색..." oninput="handleSearch(this.value)" />
       <button class="search-clear" id="searchClear" onclick="clearSearch()">지우기</button>
     </div>
+    <div id="catalogArtists"></div>
     <div class="filter-panel">
       <div class="filter-panel-title">조건 선택 — 점선 칩은 알고리즘이 자동 추론한 연관 항목</div>
       <div class="filter-group"><div class="filter-group-label">분위기</div><div class="chip-list" id="moodChips"></div></div>
@@ -327,10 +339,6 @@
       </div>
     </div>
     <div class="song-list" id="songList"></div>
-    <div class="filter-group" style="margin-bottom:10px;">
-      <div class="filter-group-label">재생 시간 (선택 — 내 곡으로 채우고 부족하면 추천곡으로 채워요)</div>
-      <div class="chip-list" id="durationChips"></div>
-    </div>
     <div class="make-wrap">
       <button class="btn-make" id="makeBtn" onclick="goResults()">플레이리스트 만들기 →</button>
     </div>
@@ -405,9 +413,11 @@ const TAGS = {
 // ═══════════════════════════════════════════════════════════
 //  STATE
 // ═══════════════════════════════════════════════════════════
-const S = { step:0, sit:[], mood:[], gen:[], art:[], query:'', playlist:[...SONGS], durationMin:null };
+const S = { step:0, sit:[], mood:[], gen:[], art:[], query:'', playlist:[...SONGS], durationMin:null, mixRatio:{ own:7, rec:3 } };
 // 플레이리스트를 아직 안 불러왔을 때 검색으로 찾은 Spotify 카탈로그 곡들
 let catalogResults = [];
+// 검색어가 아티스트 이름과도 겹칠 때 함께 찾은 아티스트 후보 (선택하면 그 아티스트 곡으로 전환)
+let catalogArtists = [];
 
 // ═══════════════════════════════════════════════════════════
 //  ALGORITHM: 계층형 추론 + 점수 기반 랭킹
@@ -551,9 +561,50 @@ function init() {
   renderChips('situation', 'sitChips',  TAGS.situation);
   renderChips('genre',     'genChips',  TAGS.genre);
   renderChips('artist',    'artChips',  TAGS.artist);
+  renderRatioChips();
   renderDurationChips();
   renderSongs();
   updateAuthUI();
+}
+
+// ═══════════════════════════════════════════════════════════
+//  믹스 비율 선택 (내 곡 : 추천곡)
+// ═══════════════════════════════════════════════════════════
+const RATIO_OPTIONS = [
+  { own:10, rec:0, label:'내 곡만' },
+  { own:8,  rec:2, label:'8:2' },
+  { own:7,  rec:3, label:'7:3 (기본)' },
+  { own:6,  rec:4, label:'6:4' },
+  { own:5,  rec:5, label:'5:5' },
+];
+
+function renderRatioChips() {
+  const el = document.getElementById('ratioChips');
+  if (!el) return;
+  el.innerHTML = '';
+  RATIO_OPTIONS.forEach(({ own, rec, label }) => {
+    const c = document.createElement('div');
+    c.className = 'chip ratio' + (own === S.mixRatio.own && rec === S.mixRatio.rec ? ' active' : '');
+    c.textContent = label;
+    c.dataset.own = own; c.dataset.rec = rec;
+    c.onclick = () => setMixRatio(own, rec);
+    el.appendChild(c);
+  });
+}
+
+function setMixRatio(own, rec) {
+  S.mixRatio = { own, rec };
+  document.querySelectorAll('.chip.ratio').forEach(c => {
+    c.classList.toggle('active', Number(c.dataset.own) === own && Number(c.dataset.rec) === rec);
+  });
+  // 이미 불러온 플레이리스트가 있으면 새 API 호출 없이 갖고 있는 원곡/추천곡 풀로 다시 섞음
+  if (spotifyImportedTracks.length) {
+    SONGS = mixTracksByRatio(spotifyImportedTracks, spotifyRecommendedTracks);
+    TAGS.artist = [...new Set(SONGS.map(s => s.aKey))].slice(0, 24);
+    renderChips('artist', 'artChips', TAGS.artist);
+    buildPlaylist();
+  }
+  renderSongs(); updateMakeBtn();
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -595,28 +646,30 @@ function setDuration(min) {
   renderSongs(); updateMakeBtn();
 }
 
-// 재생 시간이 설정된 경우: 내 원곡을 순서대로 먼저 채우고, 남는 시간은 추천곡으로 채움
+// 재생 시간이 설정된 경우: 선택한 믹스 비율(내 곡:추천곡)을 유지하면서 목표 시간까지 채움
 function applyDurationLimit(list) {
   if (!S.durationMin) return list;
   const targetMs = S.durationMin * 60000;
   const own = list.filter(s => !s.recommended);
   const usedUris = new Set(list.map(s => s.spotifyUri).filter(Boolean));
   // 화면에 이미 보이는 추천곡 + (부족하면) 가져올 때 넉넉히 모아둔 전체 추천곡 풀에서 추가로 끌어옴
-  const extraPool = SONGS.length ? spotifyRecommendedTracks.filter(s => !usedUris.has(s.spotifyUri)) : [];
+  const extraPool = SONGS.length ? shuffleArray(spotifyRecommendedTracks.filter(s => !usedUris.has(s.spotifyUri))) : [];
   const rec = [...list.filter(s => s.recommended), ...extraPool];
+  return fillByRatioUntilDuration(own, rec, targetMs);
+}
+
+// 두 곡 풀(own/rec)을 현재 선택된 비율로 섞어가며 목표 재생 시간(ms)에 도달할 때까지 채움
+function fillByRatioUntilDuration(ownPool, recPool, targetMs) {
+  const { own: ownWeight, rec: recWeight } = S.mixRatio;
+  const own = [...ownPool];
+  const rec = recWeight > 0 ? [...recPool] : [];
   const result = [];
   let total = 0;
-  for (const s of own) {
-    if (total >= targetMs) break;
-    result.push(s);
-    total += s.durationMs || 0;
-  }
-  if (total < targetMs) {
-    for (const s of rec) {
-      if (total >= targetMs) break;
-      result.push(s);
-      total += s.durationMs || 0;
-    }
+  while ((own.length || rec.length) && total < targetMs) {
+    const pickRec = rec.length && (!own.length || Math.random() < recWeight / (ownWeight + recWeight));
+    const next = pickRec ? rec.shift() : own.shift();
+    result.push(next);
+    total += next.durationMs || 0;
   }
   return result;
 }
@@ -703,43 +756,162 @@ async function fetchSpotifySearchPage(query, offset) {
   return data.tracks?.items || [];
 }
 
+// 아티스트 후보 목록을 렌더링 — 클릭하면 그 아티스트의 곡으로 검색 결과가 전환됨
+function renderCatalogArtists() {
+  const el = document.getElementById('catalogArtists');
+  if (!el) return;
+  el.innerHTML = '';
+  if (!catalogArtists.length) return;
+  const label = document.createElement('div');
+  label.className = 'filter-group-label';
+  label.style.marginBottom = '6px';
+  label.textContent = '아티스트로 찾기';
+  const list = document.createElement('div');
+  list.className = 'chip-list';
+  list.style.marginBottom = '14px';
+  catalogArtists.forEach(a => {
+    const c = document.createElement('div');
+    c.className = 'chip artist';
+    c.textContent = `🎤 ${a.name}`;
+    c.onclick = () => browseArtist(a.name);
+    list.appendChild(c);
+  });
+  el.appendChild(label);
+  el.appendChild(list);
+}
+
+// 특정 아티스트를 선택했을 때: 그 아티스트의 곡들로 카탈로그 결과를 채움
+async function browseArtist(name) {
+  if (!spotifyAccessToken()) return;
+  clearTimeout(catalogSearchTimer);
+  try {
+    spotifyStatus(`'${name}'의 곡을 찾는 중...`);
+    const found = [];
+    for (let page = 0; page < 3; page++) {
+      const items = await fetchSpotifySearchPage(`artist:"${name}"`, page * 10);
+      if (!items.length) break;
+      found.push(...items);
+      if (items.length < 10) break;
+    }
+    catalogResults = dedupeByTitleArtist(uniqueByUri(found.map(t => normalizeSpotifyTrack(t, false))));
+    catalogArtists = [];
+    renderCatalogArtists();
+
+    S.query = '';
+    const si = document.getElementById('searchInput'); if (si) si.value = '';
+    const clear = document.getElementById('searchClear'); if (clear) clear.classList.remove('visible');
+    S.mood = []; S.sit = []; S.gen = []; S.art = [];
+    document.querySelectorAll('.chip:not(.duration):not(.ratio)').forEach(c => c.classList.remove('active','inferred'));
+    document.getElementById('inferBox').style.display = 'none';
+    document.getElementById('badgeText').textContent = `아티스트: ${name}`;
+    document.getElementById('badgeDot').style.background = '#1db954';
+
+    spotifyStatus(catalogResults.length ? `${catalogResults.length}곡을 찾았습니다.` : '검색 결과가 없습니다.');
+  } catch (err) {
+    spotifyStatus(err.message || '아티스트 곡을 가져오지 못했습니다.');
+    catalogResults = [];
+  }
+  buildPlaylist(); renderSongs(); updateMakeBtn();
+}
+
+// 특정 곡을 선택했을 때: 같은 아티스트의 다른 곡 + 같은 장르의 곡을 모아 "비슷한 곡"으로 전환
+// (Spotify의 공식 추천/연관곡 API가 막혀 있어 아티스트·장르 기반으로 근사합니다)
+async function showSimilarSongs(id) {
+  const seed = catalogResults.find(t => t.id === id);
+  if (!seed || !spotifyAccessToken()) return;
+  clearTimeout(catalogSearchTimer);
+  try {
+    spotifyStatus(`'${seed.title}'와 비슷한 곡을 찾는 중...`);
+    const seenUri = new Set([seed.spotifyUri]);
+    const found = [seed];
+
+    const artistItems = await fetchSpotifySearchPage(`artist:"${seed.aKey}"`, 0);
+    artistItems.forEach(t => {
+      if (!seenUri.has(t.uri)) { seenUri.add(t.uri); found.push(normalizeSpotifyTrack(t, false)); }
+    });
+
+    if (seed.artistId) {
+      const genreMap = await fetchArtistGenres([seed.artistId]);
+      const genres = (genreMap[seed.artistId] || []).slice(0, 2);
+      for (const g of genres) {
+        const genreItems = await fetchSpotifySearchPage(`genre:"${g}"`, 0);
+        genreItems.forEach(t => {
+          if (!seenUri.has(t.uri)) { seenUri.add(t.uri); found.push(normalizeSpotifyTrack(t, false)); }
+        });
+      }
+    }
+
+    catalogResults = dedupeByTitleArtist(found);
+    catalogArtists = [];
+    renderCatalogArtists();
+
+    S.query = '';
+    const si = document.getElementById('searchInput'); if (si) si.value = '';
+    const clear = document.getElementById('searchClear'); if (clear) clear.classList.remove('visible');
+    S.mood = []; S.sit = []; S.gen = []; S.art = [];
+    document.querySelectorAll('.chip:not(.duration):not(.ratio)').forEach(c => c.classList.remove('active','inferred'));
+    document.getElementById('inferBox').style.display = 'none';
+    document.getElementById('badgeText').textContent = `"${seed.title}"와 비슷한 곡`;
+    document.getElementById('badgeDot').style.background = '#1db954';
+
+    spotifyStatus(`${catalogResults.length}곡을 찾았습니다.`);
+  } catch (err) {
+    spotifyStatus(err.message || '비슷한 곡을 찾지 못했습니다.');
+  }
+  buildPlaylist(); renderSongs(); updateMakeBtn();
+}
+
+// 곡 목록에서 곡을 눌렀을 때: 불러온 플레이리스트 안이면 상세 정보, 카탈로그 검색 중이면 비슷한 곡 찾기
+function handleSongClick(id) {
+  if (SONGS.length) openModal(id);
+  else showSimilarSongs(id);
+}
+
 // 불러온 플레이리스트가 없을 때, 현재 필터/검색어 조합으로 Spotify 카탈로그를 다시 검색
 // (genre: 필터를 OR로 묶으면 Spotify 검색이 제대로 처리하지 못해, 장르별로 따로 검색 후 합칩니다)
 async function refreshCatalogResults() {
   if (SONGS.length) return;
   if (!spotifyAccessToken()) {
-    catalogResults = [];
-    buildPlaylist(); renderSongs(); updateMakeBtn();
+    catalogResults = []; catalogArtists = [];
+    renderCatalogArtists(); buildPlaylist(); renderSongs(); updateMakeBtn();
     return;
   }
   const genres = collectCatalogGenres();
   if (!S.query && !genres.length) {
-    catalogResults = [];
-    buildPlaylist(); renderSongs(); updateMakeBtn();
+    catalogResults = []; catalogArtists = [];
+    renderCatalogArtists(); buildPlaylist(); renderSongs(); updateMakeBtn();
     return;
   }
 
-  const queries = genres.length
-    ? genres.slice(0, 4).map(g => `${S.query} genre:"${GENRE_KO_EN[g] || g}"`.trim())
-    : [S.query];
-  const PAGES_PER_QUERY = 3; // 쿼리당 최대 30곡
-
   try {
-    spotifyStatus('Spotify에서 곡을 찾는 중...');
-    const found = [];
-    for (const q of queries) {
-      for (let page = 0; page < PAGES_PER_QUERY; page++) {
-        const items = await fetchSpotifySearchPage(q, page * 10);
-        if (!items.length) break;
-        found.push(...items);
-        if (items.length < 10) break;
+    spotifyStatus('Spotify에서 찾는 중...');
+    if (S.query) {
+      // 검색어가 있으면 정확도를 위해 텍스트만으로 검색합니다 — genre: 필터를 같이 넣으면
+      // Spotify가 제목은 안 맞아도 장르만 맞는 엉뚱한 곡을 섞어서 반환하기 때문입니다.
+      // 무드/상황/장르 칩은 검색 결과가 온 뒤 buildPlaylist()가 곡별 추정 태그로 다시 걸러냅니다.
+      const data = await spotifyApi(`/search?type=track,artist&limit=10&market=KR&q=${encodeURIComponent(S.query)}`);
+      catalogResults = dedupeByTitleArtist(uniqueByUri((data.tracks?.items || []).map(t => normalizeSpotifyTrack(t, false))));
+      catalogArtists = (data.artists?.items || []).filter(a => a && a.name).slice(0, 6);
+    } else {
+      // 검색어 없이 칩만 선택한 경우: 장르 필터로 카탈로그를 넓게 찾습니다.
+      const found = [];
+      for (const g of genres.slice(0, 4)) {
+        for (let page = 0; page < 3; page++) {
+          const items = await fetchSpotifySearchPage(`genre:"${GENRE_KO_EN[g] || g}"`, page * 10);
+          if (!items.length) break;
+          found.push(...items);
+          if (items.length < 10) break;
+        }
       }
+      catalogResults = dedupeByTitleArtist(uniqueByUri(found.map(t => normalizeSpotifyTrack(t, false))));
+      catalogArtists = [];
     }
-    catalogResults = uniqueByUri(found.map(t => normalizeSpotifyTrack(t, false)));
+    renderCatalogArtists();
     spotifyStatus(catalogResults.length ? `${catalogResults.length}곡을 찾았습니다.` : '검색 결과가 없습니다.');
   } catch (err) {
     spotifyStatus(err.message || '검색에 실패했습니다.');
-    catalogResults = [];
+    catalogResults = []; catalogArtists = [];
+    renderCatalogArtists();
   }
   buildPlaylist(); renderSongs(); updateMakeBtn();
 }
@@ -810,7 +982,7 @@ function toggleChip(type, tag) {
 
 function clearAll() {
   S.mood = []; S.sit = []; S.gen = []; S.art = [];
-  document.querySelectorAll('.chip:not(.duration)').forEach(c => c.classList.remove('active','inferred'));
+  document.querySelectorAll('.chip:not(.duration):not(.ratio)').forEach(c => c.classList.remove('active','inferred'));
   document.getElementById('inferBox').style.display = 'none';
   document.getElementById('rankNote').textContent = '';
   onFilterChanged();
@@ -876,7 +1048,7 @@ function renderSongs(keepLimit = false) {
   }
   const shown = list.slice(0, songListLimit);
   el.innerHTML = shown.map((s, i) => `
-    <div class="song-item" onclick="openModal(${s.id})">
+    <div class="song-item" onclick="handleSongClick(${s.id})">
       <div class="song-num">${i + 1}</div>
       <div class="song-avatar" style="background:${s.color}20;color:${s.color};border-color:${s.color}38;overflow:hidden;">${avatarInner(s)}</div>
       <div class="song-info">
@@ -967,7 +1139,8 @@ function suggestPlaylistName() {
 //  MODAL
 // ═══════════════════════════════════════════════════════════
 function getRelated(song) {
-  return SONGS.filter(s => s.id !== song.id)
+  const pool = SONGS.length ? SONGS : currentResultList;
+  return pool.filter(s => s.id !== song.id)
     .map(s => ({
       song: s,
       score: s.mood.filter(m => song.mood.includes(m)).length * 2
@@ -977,8 +1150,14 @@ function getRelated(song) {
     .filter(x => x.score > 0).sort((a,b) => b.score - a.score).slice(0, 3).map(x => x.song);
 }
 
+function findSong(id) {
+  return SONGS.find(x => x.id === id)
+    || catalogResults.find(x => x.id === id)
+    || currentResultList.find(x => x.id === id);
+}
+
 function openModal(id) {
-  const s = SONGS.find(x => x.id === id);
+  const s = findSong(id);
   if (!s) return;
   const related = getRelated(s);
   document.getElementById('modalBody').innerHTML = `
@@ -1033,12 +1212,15 @@ function backdropClick(e) { if (e.target === document.getElementById('backdrop')
 function clearImportedSongs(notify = true) {
   SONGS = [];
   catalogResults = [];
+  catalogArtists = [];
+  renderCatalogArtists();
   currentResultList = [];
   S.mood = []; S.sit = []; S.gen = []; S.art = []; S.query = ''; S.playlist = [];
   TAGS.artist = [];
   renderChips('artist', 'artChips', TAGS.artist);
   document.querySelectorAll('.chip').forEach(c => c.classList.remove('active','inferred'));
   setDuration(null);
+  renderRatioChips();
   const si = document.getElementById('searchInput'); if (si) si.value = '';
   const clear = document.getElementById('searchClear'); if (clear) clear.classList.remove('visible');
   document.getElementById('inferBox').style.display = 'none';
@@ -1199,10 +1381,13 @@ function spotifyAccessToken() {
 function spotifyLogout() {
   Object.values(SPOTIFY_STORAGE).forEach(k => { localStorage.removeItem(k); sessionStorage.removeItem(k); });
   SONGS = [];
+  catalogResults = [];
+  catalogArtists = [];
+  renderCatalogArtists();
   S.mood = []; S.sit = []; S.gen = []; S.art = []; S.query = ''; S.playlist = [];
   TAGS.artist = [];
   renderChips('artist', 'artChips', TAGS.artist);
-  document.querySelectorAll('.chip:not(.duration)').forEach(c => c.classList.remove('active','inferred'));
+  document.querySelectorAll('.chip:not(.duration):not(.ratio)').forEach(c => c.classList.remove('active','inferred'));
   setDuration(null);
   document.getElementById('badgeText').textContent = '곡 데이터 없음';
   document.getElementById('badgeDot').style.background = 'var(--bd2)';
@@ -1275,12 +1460,13 @@ async function importSelectedSpotifyPlaylist() {
 
     updateLoadingMsg('추천 후보를 모으는 중...');
     spotifyRecommendedTracks = await buildSpotifyRecommendations(spotifyImportedTracks, genreMap);
-    const mixed = mixSpotifyTracks7030(spotifyImportedTracks, spotifyRecommendedTracks);
+    const mixed = mixTracksByRatio(spotifyImportedTracks, spotifyRecommendedTracks);
     setSpotifySongs(mixed);
 
-    document.getElementById('badgeText').textContent = `Spotify 7:3 · ${select.options[select.selectedIndex].text}`;
+    const ratioLabel = `${S.mixRatio.own}:${S.mixRatio.rec}`;
+    document.getElementById('badgeText').textContent = `Spotify ${ratioLabel} · ${select.options[select.selectedIndex].text}`;
     document.getElementById('badgeDot').style.background = '#1db954';
-    document.getElementById('s1Title').textContent = 'Spotify 플레이리스트를 7:3으로 구성했어요!';
+    document.getElementById('s1Title').textContent = `Spotify 플레이리스트를 ${ratioLabel}으로 구성했어요!`;
     spotifyStatus(`가져온 곡 ${spotifyImportedTracks.length}곡 + 추천 ${mixed.filter(s => s.recommended).length}곡으로 구성했습니다.`);
   } catch (err) {
     spotifyStatus(err.message || 'Spotify 플레이리스트를 가져오지 못했습니다.');
@@ -1315,6 +1501,7 @@ function normalizeSpotifyTrack(track, recommended = false, genreMap = {}) {
     id: spotifyLocalId++,
     spotifyId: track.id,
     spotifyUri: track.uri,
+    artistId: track.artists?.[0]?.id || '',
     recommended,
     title: track.name,
     artist,
@@ -1404,8 +1591,8 @@ function fillTagVariety(arr, pool, seed, axis) {
   }
 }
 
-// 7:3 기본 믹스용으로 필요한 양보다 훨씬 넉넉하게 가져와 둡니다.
-// (재생 시간 선택 시 이 풀에서 추가로 끌어와 부족한 시간을 채우기 위함 — mixSpotifyTracks7030이 기본 믹스 비율은 알아서 맞춤)
+// 기본 믹스에 필요한 양보다 훨씬 넉넉하게 가져와 둡니다(비율/재생시간 조절 시 재사용).
+// (재생 시간 선택 시 이 풀에서 추가로 끌어와 부족한 시간을 채우기 위함 — mixTracksByRatio가 기본 믹스 비율은 알아서 맞춤)
 async function buildSpotifyRecommendations(baseTracks, genreMap = {}) {
   const baseUris = new Set(baseTracks.map(t => t.spotifyUri));
   const artistCounts = new Map();
@@ -1420,13 +1607,24 @@ async function buildSpotifyRecommendations(baseTracks, genreMap = {}) {
       if (!baseUris.has(track.uri)) found.push(normalizeSpotifyTrack(track, true, genreMap));
     });
   }
-  return uniqueByUri(found).slice(0, 80);
+  return dedupeByTitleArtist(uniqueByUri(found)).slice(0, 80);
 }
 
 function uniqueByUri(tracks) {
   const seen = new Set();
   return tracks.filter(t => {
     const key = t.spotifyUri || `${t.title}-${t.artist}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+// 같은 곡의 싱글/앨범/리마스터판 등 다른 트랙 ID로 중복 등록된 버전을 제목+아티스트 기준으로 한 번 더 정리
+function dedupeByTitleArtist(tracks) {
+  const seen = new Set();
+  return tracks.filter(t => {
+    const key = `${t.title.trim().toLowerCase()}::${t.aKey.trim().toLowerCase()}`;
     if (seen.has(key)) return false;
     seen.add(key);
     return true;
@@ -1442,17 +1640,18 @@ function shuffleArray(arr) {
   return a;
 }
 
-// 원곡 순서는 유지하되, 추천곡을 7:3 비율로 자연스럽게(랜덤하게) 끼워 넣습니다.
-function mixSpotifyTracks7030(baseTracks, recommendedTracks) {
-  const recTarget = Math.min(recommendedTracks.length, Math.ceil(baseTracks.length * 3 / 7));
+// 원곡 순서는 유지하되, 추천곡을 선택된 비율(S.mixRatio)로 자연스럽게(랜덤하게) 끼워 넣습니다.
+function mixTracksByRatio(baseTracks, recommendedTracks) {
+  const { own: ownWeight, rec: recWeight } = S.mixRatio;
+  if (recWeight <= 0) return baseTracks;
+  const recTarget = Math.min(recommendedTracks.length, Math.ceil(baseTracks.length * recWeight / ownWeight));
   const recPool = shuffleArray(recommendedTracks).slice(0, recTarget);
   if (!recPool.length) return baseTracks;
 
   const basePool = [...baseTracks];
   const result = [];
-  const recWeight = 3, baseWeight = 7;
   while (basePool.length || recPool.length) {
-    const pickRec = recPool.length && (!basePool.length || Math.random() < recWeight / (recWeight + baseWeight));
+    const pickRec = recPool.length && (!basePool.length || Math.random() < recWeight / (recWeight + ownWeight));
     result.push(pickRec ? recPool.shift() : basePool.shift());
   }
   return result;
@@ -1461,11 +1660,13 @@ function mixSpotifyTracks7030(baseTracks, recommendedTracks) {
 function setSpotifySongs(tracks) {
   SONGS = tracks;
   catalogResults = [];
+  catalogArtists = [];
+  renderCatalogArtists();
   currentResultList = [];
   S.mood = []; S.sit = []; S.gen = []; S.art = []; S.query = ''; S.playlist = [...SONGS];
   TAGS.artist = [...new Set(SONGS.map(s => s.aKey))].slice(0, 24);
   renderChips('artist', 'artChips', TAGS.artist);
-  document.querySelectorAll('.chip:not(.duration)').forEach(c => c.classList.remove('active','inferred'));
+  document.querySelectorAll('.chip:not(.duration):not(.ratio)').forEach(c => c.classList.remove('active','inferred'));
   const searchInput = document.getElementById('searchInput');
   if (searchInput) searchInput.value = '';
   const clear = document.getElementById('searchClear');
@@ -1489,7 +1690,7 @@ async function createSpotifyPlaylistFromCurrent() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         name,
-        description: '내 Spotify 플레이리스트 70% + 추천곡 30%로 만든 목록',
+        description: `내 Spotify 플레이리스트와 추천곡을 ${S.mixRatio.own}:${S.mixRatio.rec} 비율로 만든 목록`,
         public: false
       })
     });
